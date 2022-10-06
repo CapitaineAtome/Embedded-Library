@@ -9,3 +9,7 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+/tests/cmake-build-debug/
+/tests/cmake-build-debug-arm/
+/tests/cmake-build-release/
+/tests/cmake-build-release-arm/
