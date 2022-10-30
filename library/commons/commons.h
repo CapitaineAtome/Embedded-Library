@@ -5,8 +5,8 @@
  * Here are implemented common functions that are used throughout the API.
  *
  * @note The following functions have to be implemented:
- * - @ref sleep_ms
- * - @ref sleep_us
+ * - @ref hal::sleep(uint32_t ms) "sleep ms"
+ * - @ref hal::sleep(uint64_t us) "sleep µs"
  *
  * @warning If these functions aren't implemented a warning will be raised and they won't do anything !
  *
@@ -17,44 +17,140 @@
 
 #include <cstdint>
 #include <cstddef>
+#include <cstring>
 #include <sys/types.h>
+
+#include "../traits/NonCopyable.h"
+#include "../traits/NonMovable.h"
 
 #include "commons_concepts.h"
 
+#ifdef HAL_RP2040
+#include "commons_rp2040.h"
+//#elif defined(HAL_ATMEGA328) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__) // NOTE: NOT IMPLEMENTED YET
+//#include "commons_atmega328p.h"
+#else
+#warning Platform not defined or not recognised
+#endif
+
+/**********************************************************************************************************************
+ * These are implemented in platform specific headers
+ *      namespace hal::peripherals {
+ *          enum UARTInstance : uint8_t {}; which list number of UART instance
+ *          enum SPIInstance : uint8_t {}; which list number of SPI instance
+ *          enum I2CInstance : uint8_t {}; which list number of I2C instance
+ *          and so on
+ *          ....
+ *      }
+ *
+ * Not all platform implement the enum classes nor their fields.
+ * For more platform specific functions use the platform API.
+ *
+ **********************************************************************************************************************/
+
 namespace hal {
+
+    // ****************************************************************
+    //                              Enums
+    // ****************************************************************
 
     namespace peripherals {
 
-        /**
-	 	 * Hardware instances of uart, i2c, spi, ... peripherals
-	 	 */
-        enum HardwareInstance : uint8_t {
+        constexpr uint UART_DEFAULT_BAUD_RATE{115'200U};      ///< uart default baud rate
+        constexpr uint I2C_DEFAULT_BAUD_RATE{400'000U};       ///< i2c default baud rate
+        constexpr uint SPI_DEFAULT_BAUD_RATE{50'000'000U};    ///< spi default baud rate
 
-        }; // enum HardwareInstance
+        namespace gpio {
 
-        enum DefaultPeripheralSettings {
+            /**
+             * Direction definition of a GPIO pin
+             */
+            enum class Direction : uint8_t {
 
-            UART_DEFAULT_BAUD_RATE = 115'200U,      ///< uart default baud rate
-            I2C_DEFAULT_BAUD_RATE = 400'000U,       ///< i2c default baud rate
-            SPI_DEFAULT_BAUD_RATE = 50'000'000U,    ///< spi default baud rate
+                IN,
+                OUT
+            };
 
-        }; // enum DefaultPeripheralSettings
+            /**
+             * Pulling mode definition of a GPIO pin
+             */
+            enum class Pull : uint8_t {
+
+                NONE,
+                UP,
+                DOWN,
+                OPEN_DRAIN
+            };
+
+            /**
+             * Function definition of a GPIO pin. What it is used for. NONE = DEFAULT
+             */
+            enum class Function : uint8_t {
+
+                NONE,
+                GPIO,
+                UART,
+                SPI,
+                I2C,
+                PWM,
+                USB
+            };
+
+            /**
+             * Interrupt level definition of a GPIO pin
+             */
+            enum class IRQ : uint8_t {
+
+                NONE,
+                LEVEL_LOW,
+                LEVEL_HIGH,
+                EDGE_FALL,
+                EDGE_RISE
+            };
+
+            enum class SlewRate : uint8_t {
+                SLOW,
+                FAST
+            };
+
+        } // namespace gpio
+
+        namespace uart {
+
+            enum class Parity : uint8_t {
+                PARITY_NONE,
+                PARITY_EVEN,
+                PARITY_ODD
+            };
+        } // namespace uart
+
+        namespace i2c {
+
+            enum class Mode : uint8_t {
+                MODE_SLAVE,
+                MODE_MASTER
+            };
+        } // namespace i2c
 
     } // namespace peripherals
 
-    enum class Error {
+    enum class [[nodiscard]] Error {
 
-        Ok = 0,
-        Error,
+        NONE,
+        ERROR,
+        NOTAVAILABLEONPLATFORM,
+        TOOSMALL,
+        TOOBIG,
+        AGAIN
 
     }; // enum class Error
 
     /**
 	 * Set a bit in a bitset.
 	 *
-     * @code
+     * @code{cpp}
      * uint8_t bit_set{0};
-     * uint8_t pos{4};\
+     * uint8_t pos{4};
      * set_bit(bit_set, pos);
      * 
      * // Result: bit_set == 0b00010000;
@@ -75,7 +171,7 @@ namespace hal {
     /**
 	 * Clear a bit in a bitset.
      *
-	 * @code
+	 * @code{cpp}
      * uint8_t bit_set{0xFF};
      * uint8_t pos{4};
      * clear_bit(bit_set, pos);
@@ -100,7 +196,7 @@ namespace hal {
      * If the bit at position 'pos' in 'bit_field' == 0 it becomes 1
      * If the bit at position 'pos' in 'bit_field' == 1 it becomes 0
      *
-     * @code
+     * @code{cpp}
      * uint8_t bit_set{0};
      * uint8_t pos{4};
      * toggle_bit(bit_set, pos);
@@ -124,7 +220,7 @@ namespace hal {
      * Check whether or not a bit is set.
      * A bit is set if it is equal to 1.
      *
-     * @code
+     * @code{cpp}
      * uint8_t bit_set{0};
      * uint8_t pos{4};
      * bool val{check_bit(bit_set, pos)};
@@ -148,7 +244,7 @@ namespace hal {
     /**
      * Set a bit to 1 at a given position.
      *
-     * @code
+     * @code{cpp}
      * uint8_t bit_set{0};
      * uint8_t pos{4};
      * uint8_t value{0b1111};
@@ -174,7 +270,7 @@ namespace hal {
     /**
      * Set the bit mask in the bit set.
      *
-     * @code
+     * @code{cpp}
      * uint8_t bit_set{0};
      * uint8_t bit_mask{0b1111};
      * set_bits(bit_set, bit_mask);
@@ -197,7 +293,7 @@ namespace hal {
     /**
      * Clear the bits in bit_set at bit_mask position.
      *
-     * @code
+     * @code{cpp}
      * uint8_t bitset{0b11111111};
      * uint8_t bitmask{0b11000011};
      * clear_bits(bitset, bitmask);
@@ -220,7 +316,7 @@ namespace hal {
     /**
      * Toggle the bit in bit_set using bit_mask.
      *
-     * @code
+     * @code{cpp}
      * uint8_t bitset{0b11111111};
      * uint8_t bitmask{0b11000011};
      * toggle_bits(bitset, bitmask);
@@ -259,7 +355,7 @@ namespace hal {
     /**
      * Get the length of a given array
      *
-     * @code
+     * @code{cpp}
      * uint8_t buffer8[4096]{};
      * uint16_t buffer16[4096]{};
      * uint32_t buffer32[4096]{};
@@ -282,30 +378,314 @@ namespace hal {
     }
 
     /**
+     * Compares and returns the minimum value given in parameters.
+     *
+     * @note Return type depend on rule of T1 and T2 cast rule. double > float > long int > int
+     *
+     * @tparam T1 type of first parameter that has to be totally ordered
+     * @tparam T2 type of second parameter that has to be totally ordered
+     * @param a element to compare
+     * @param b element to compare
+     * @return minimum value between the first and second parameters
+     */
+    template<typename T1, typename T2>
+    requires std::totally_ordered<T1> and std::totally_ordered<T2>
+    auto min(T1 a, T2 b) {
+
+        return (a < b ? a : b);
+    }
+
+    /**
+     * Compares and returns the maximum value given in parameters.
+     *
+     * @note Return type depend on rule of T1 and T2 cast rule. double > float > long int > int
+     *
+     * @tparam T1 type of first parameters that has to be totally ordered
+     * @tparam T2 type of second parameters that has to be totally ordered
+     * @param a element to compare
+     * @param b element to compare
+     * @return maximum value between the first and second parameters
+     */
+    template<typename T1, typename T2>
+    requires std::equality_comparable<T1> and std::equality_comparable<T2>
+    auto max(T1 a, T2 b) {
+
+        return (a > b ? a : b);
+    }
+
+    /**
+     * Class that is used to pack and unpack data types.
+     * Values can be unpacked to another native c++ types or to a buffer for them to be send over
+     * a communication wire, protocol ...
+     *
+     * @code{cpp}
+     * TypesSerializer ts{};
+     * uint8_t buffer[ts::buffer_size];
+     * ts << 3.141f // Pack a float
+     * ts >> buffer; // Unpack it into buffer
+     * @endcode
+     *
+     */
+    class TypeSerializer {
+    public:
+
+        TypeSerializer() : m_value{} {}
+        ~TypeSerializer()=default;
+
+        /**
+         * Pack a value using buffer.
+         * @ref hal::TypeSerialize::pack() "see pack".
+         *
+         * @tparam sz size of the buffer
+         * @param buffer contains value to pack
+         * @return instance of this class
+         */
+        template<const size_t sz>
+        TypeSerializer &operator<<(uint8_t (&buffer)[sz]) {
+            pack(buffer, sz);
+            return *this;
+        }
+
+        /**
+         * Unpack a value using buffer.
+         * @ref hal::TypeSerialize::unpack() "see unpack".
+         *
+         * @tparam sz size of the buffer
+         * @param buffer contains value to unpack
+         * @return instance of this class
+         */
+        template<const size_t sz>
+        TypeSerializer &operator>>(uint8_t (&buffer)[sz]) {
+            unpack(buffer, sz);
+            return *this;
+        }
+
+        /**
+         * Operator to pack a uin8_t
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator<<(const uint8_t value) {
+
+            m_value.v64 = 0;
+            m_value.v8 = value;
+            return *this;
+        }
+
+        /**
+         * Operator to pack a uin16_t
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator<<(const uint16_t value) {
+
+            m_value.v64 = 0;
+            m_value.v16 = value;
+            return *this;
+        }
+
+        /**
+         * Operator to pack a uin32_t
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator<<(const uint32_t value) {
+
+            m_value.v64 = 0;
+            m_value.v32 = value;
+            return *this;
+        }
+
+        /**
+         * Operator to pack a uin64_t
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator<<(const uint64_t value) {
+
+            m_value.v64 = 0;
+            m_value.v64 = value;
+            return *this;
+        }
+
+        /**
+         * Operator to pack a float
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator<<(const float value) {
+
+            m_value.v64 = 0;
+            m_value.vf = value;
+            return *this;
+        }
+
+        /**
+         * Operator to pack a double
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator<<(const double value) {
+
+            m_value.v64 = 0;
+            m_value.vd = value;
+            return *this;
+        }
+
+        /**
+         * Operator to unpack a uint8_t
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator>>(uint8_t &value) {
+
+            value = m_value.v8;
+            return *this;
+        }
+
+        /**
+         * Operator to unpack a uint16_t
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator>>(uint16_t &value) {
+
+            value = m_value.v16;
+            return *this;
+        }
+
+        /**
+         * Operator to unpack a uint32_t
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator>>(uint32_t &value) {
+
+            value = m_value.v32;
+            return *this;
+        }
+
+        /**
+         * Operator to unpack a uint64_t
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator>>(uint64_t &value) {
+
+            value = m_value.v64;
+            return *this;
+        }
+
+        /**
+         * Operator to unpack a float
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator>>(float &value) {
+
+            value = m_value.vf;
+            return *this;
+        }
+
+        /**
+         * Operator to unpack a double
+         *
+         * @param value to serialize
+         * @return instance of this class
+         */
+        TypeSerializer &operator>>(double &value) {
+
+            value = m_value.vd;
+            return *this;
+        }
+
+        /**
+         * Clear the packed value
+         */
+        void clear() {
+
+            m_value.v64 = 0; // Can also do a memset but this is faster
+        }
+
+        /**
+         * Unpack a value and set it into buffer. Return the size of the unpacked value.
+         *
+         * @param buffer value to pack
+         * @param sz sizeof of the value
+         * @return size of the unpacked value
+         */
+        std::size_t unpack(uint8_t * const buffer, const size_t sz) const {
+
+            memset(buffer, 0, sz);
+            memcpy(buffer, &m_value, hal::min(sizeof(m_value), sz));
+
+            return hal::min(sizeof(m_value), sz);
+        }
+
+        /**
+         * Pack a value from buffer and return size packed.
+         *
+         * @param buffer value to pack
+         * @param sz size of the value
+         * @return size of the packed value
+         */
+        std::size_t pack(const uint8_t * const buffer, const std::size_t sz) {
+
+            clear();
+            memcpy(&m_value, buffer, hal::min(sizeof(m_value), sz));
+
+            return hal::min(sizeof(m_value), sz);
+        }
+
+    protected:
+        /**
+         * Union that hold the values that can be packed.
+         */
+        typedef union {
+            uint8_t v8;
+            uint16_t v16;
+            uint32_t v32;
+            uint64_t v64;
+            float vf;
+            double vd;
+        } type_serializer_value;
+
+        /**
+         * Member variable that hold the value packed.
+         */
+        type_serializer_value m_value;
+
+    private:
+
+    public:
+        static constexpr size_t buffer_size{sizeof(type_serializer_value)};
+
+    };
+
+    /**
      * Sleep for us microseconds
      *
      * @param us number of microseconds to sleep
      */
-    void sleep_us(uint64_t us) {
-#ifdef PICO_RP2040
-        sleep_us(us);
-#else
-#warning Function not defined
-#endif
-    }
+    void sleep_micros(uint64_t us);
 
     /**
      * Sleep for ms milliseconds
      *
      * @param ms number of milliseconds to sleep
      */
-    void sleep_ms(uint32_t ms) {
-#ifdef PICO_RP2040
-        sleep_ms(ms);
-#else
-#warning Function not defined
-#endif
-    }
+    void sleep_millis(uint32_t ms);
 
 } // namespace hal
 

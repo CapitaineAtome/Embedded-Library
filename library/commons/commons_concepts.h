@@ -20,7 +20,9 @@ namespace hal::concepts {
 	 */
     template<typename T>
     concept is_serializable = requires(T) {
-        { std::is_integral<T>::value };
+        {   std::is_integral<T>::value or
+            std::is_same<T, float>::value or
+            std::is_same<T, double>::value };
     };
 
     /**
