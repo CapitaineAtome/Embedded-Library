@@ -5,10 +5,10 @@
  * The class @ref NonMovable "NonMovable" is a class that cannot be move constructed
  * nor can it be move assigned.
  *
- * @code
+ * @code{cpp}
  * #include <iostream>
  *
- * class A : public<NonMovable> {
+ * class A : public NonMovable<A> {
  *  A()=default;
  *  ~A() override =default;
  *

@@ -5,10 +5,10 @@
  * The class @ref NonCopyable "NonCopyable" is a class that cannot be copy constructed
  * nor can it be copy assigned.
  *
- * @code
+ * @code{cpp}
  * #include <iostream>
  *
- * class A : public<NonCopyable> {
+ * class A : public NonCopyable<A> {
  *  A()=default;
  *  ~A() override =default;
  *
