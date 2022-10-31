@@ -146,21 +146,21 @@ namespace hal {
     }; // enum class Error
 
     /**
-	 * Set a bit in a bitset.
-	 *
+     * Set a bit in a bitset.
+     *
      * @code{cpp}
      * uint8_t bit_set{0};
      * uint8_t pos{4};
      * set_bit(bit_set, pos);
-     * 
+     *
      * // Result: bit_set == 0b00010000;
      * @endcode
      *
-	 * @tparam T1 type of bit_set
-	 * @tparam T2 type of pos
-	 * @param bit_set the bit field to modify
-	 * @param pos the position of the bit to set
-	 */
+     * @tparam T1 type of bit_set
+     * @tparam T2 type of pos
+     * @param bit_set the bit field to modify
+     * @param pos the position of the bit to set
+     */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
     inline void set_bit(T1 &bit_set, const T2 pos) {
@@ -169,21 +169,21 @@ namespace hal {
     }
 
     /**
-	 * Clear a bit in a bitset.
+     * Clear a bit in a bitset.
      *
-	 * @code{cpp}
+     * @code{cpp}
      * uint8_t bit_set{0xFF};
      * uint8_t pos{4};
      * clear_bit(bit_set, pos);
-     * 
+     *
      * // Result: bit_set == 0b11101111;
      * @endcode
      *
-	 * @tparam T1 type of bit_set. Must be bitwiseable
-	 * @tparam T2 type os pos. Must be bitwiseable
-	 * @param bit_set the bit field to modify
-	 * @param pos the position of the bit to clear
-	 */
+     * @tparam T1 type of bit_set. Must be bitwiseable
+     * @tparam T2 type os pos. Must be bitwiseable
+     * @param bit_set the bit field to modify
+     * @param pos the position of the bit to clear
+     */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
     inline void clear_bit(T1 &bit_set, const T2 pos) {
@@ -200,7 +200,7 @@ namespace hal {
      * uint8_t bit_set{0};
      * uint8_t pos{4};
      * toggle_bit(bit_set, pos);
-     * 
+     *
      * // Result: bit_set == 0b00010000;
      * @endcode
      *
@@ -224,7 +224,7 @@ namespace hal {
      * uint8_t bit_set{0};
      * uint8_t pos{4};
      * bool val{check_bit(bit_set, pos)};
-     * 
+     *
      * // Result: val == true;
      * @endcode
      *
@@ -249,7 +249,7 @@ namespace hal {
      * uint8_t pos{4};
      * uint8_t value{0b1111};
      * set_bits_pos(bit_set, pos, value);
-     * 
+     *
      * // Result: bit_set == 0b11110000;
      * @endcode
      *

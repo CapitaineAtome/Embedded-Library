@@ -11,36 +11,18 @@
 
 #include "hardware/uart.h"
 
-static inline uart_inst *hal_to_rp2040_inst(hal::peripherals::UARTInstance instance) {
+static uart_inst *hal_to_rp2040_inst(hal::peripherals::UARTInstance instance) {
 
     return instance == hal::peripherals::UART_INSTANCE0 ? uart0 : uart1;
 }
 
 namespace hal::peripherals::uart {
 
-    class UART : public interfaces::InterfaceUART {
+    class UART : public interfaces::InterfaceUART, public traits::NonMovable<UART>{
     public:
         //****************************************************************
         //                   Constructors and Destructor
         //****************************************************************
-
-        UART(UART &&other) noexcept {
-
-            if(this != &other) {
-                m_rx_pin = other.m_rx_pin;
-                m_tx_pin = other.m_tx_pin;
-                m_baudrate = other.m_baudrate;
-                m_last_error = other.m_last_error;
-                m_instance = other.m_instance;
-
-                other.m_rx_pin = 0;
-                other.m_tx_pin = 0;
-                other.m_baudrate = 0;
-                other.m_last_error = Error::NONE;
-                other.m_instance = UART_INSTANCE0;
-            }
-
-        }
 
         ~UART() override {
 
@@ -50,27 +32,31 @@ namespace hal::peripherals::uart {
             }
         }
 
-        //****************************************************************
-        //                           Operators
-        //****************************************************************
+        UART(const UART &)=delete;
+        UART(UART &&)=delete;
 
-        UART &operator=(UART &&other) noexcept {
+        // ****************************************************************
+        //                            Operators
+        // ****************************************************************
+        UART &operator=(const UART &)=delete;
+        UART &operator=(UART &&)=delete;
 
-            if(this != &other) {
-                m_rx_pin = other.m_rx_pin;
-                m_tx_pin = other.m_tx_pin;
-                m_baudrate = other.m_baudrate;
-                m_last_error = other.m_last_error;
-                m_instance = other.m_instance;
+        // ****************************************************************
+        //                          Static Functions
+        // ****************************************************************
 
-                other.m_rx_pin = 0;
-                other.m_tx_pin = 0;
-                other.m_baudrate = 0;
-                other.m_last_error = Error::NONE;
-                other.m_instance = UART_INSTANCE0;
+        static UART &getInstance(const uint8_t instance) {
+
+            switch(instance) {
+                default:
+                case UART_INSTANCE0:
+                    static UART s_uart_instance0{static_cast<const UARTInstance>(instance)};
+                    return s_uart_instance0;
+
+                case UART_INSTANCE1:
+                    static UART s_uart_instance1{static_cast<const UARTInstance>(instance)};
+                    return s_uart_instance1;
             }
-
-            return *this;
         }
 
         //****************************************************************
@@ -102,7 +88,10 @@ namespace hal::peripherals::uart {
 
         void read(uint8_t *buffer, const size_t length) override {
 
-            uart_read_blocking(hal_to_rp2040_inst(m_instance), buffer, length);
+            for(size_t i{0}; i < length; i++) {
+
+                buffer[i] = uart_getc(hal_to_rp2040_inst(m_instance));
+            }
         }
 
         void write(const uint8_t buffer) override {
@@ -133,6 +122,11 @@ namespace hal::peripherals::uart {
 
         uint setBaudrate(const uint baudrate) override {
 
+            //  If initialised:
+            //      set uart baudrate to m_baudrate
+            //      return m_baudrate
+            //  Else
+            //      return m_baudrate
             return m_baudrate = isInitialised() ? uart_set_baudrate(hal_to_rp2040_inst(m_instance), baudrate) : m_baudrate;
         }
 
@@ -166,27 +160,16 @@ namespace hal::peripherals::uart {
             uart_set_hw_flow(hal_to_rp2040_inst(m_instance), cts, rts);
         }
 
-        static UART &getInstance(const uint8_t instance) {
-
-            switch(instance) {
-                default:
-                case UART_INSTANCE0:
-                    static UART s_uart_instance0{static_cast<const UARTInstance>(instance)};
-                    return s_uart_instance0;
-
-                case UART_INSTANCE1:
-                    static UART s_uart_instance1{static_cast<const UARTInstance>(instance)};
-                    return s_uart_instance1;
-            }
-        }
-
     protected:
         //****************************************************************
         //                   Constructors and Destructor
         //****************************************************************
 
         explicit UART(const peripherals::UARTInstance instance)
-        : InterfaceUART() {}
+        : InterfaceUART() {
+
+            m_instance = instance;
+        }
 
     };
 

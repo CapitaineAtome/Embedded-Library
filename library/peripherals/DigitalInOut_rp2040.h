@@ -76,11 +76,8 @@ namespace hal::peripherals::gpio {
 
         void deinit() override {
 
-            if( inited() ) {
-                gpio_deinit(m_gpio_pin);
-
-                m_gpio_func = Function::NONE;
-            }
+            gpio_deinit(m_gpio_pin);
+            m_gpio_func = Function::NONE;
         }
 
         uint8_t read() override {

@@ -14,30 +14,32 @@ namespace hal::interfaces {
 
     class InterfaceUART : public traits::Singleton {
     public:
-        //****************************************************************
-        //                             Enums
-        //****************************************************************
+        // ****************************************************************
+        //                              Enums
+        // ****************************************************************
 
-
-
-        //****************************************************************
-        //                   Constructors and Destructor
-        //****************************************************************
+        // ****************************************************************
+        //                    Constructors and Destructor
+        // ****************************************************************
 
         /**
-         * The destructor must call close()
+         * The destructor must call @ref hal::interfaces::InterfaceUART::deinit() "deinit()" in the concrete class
          */
         ~InterfaceUART() override =default;
 
-        //****************************************************************
-        //                           Operators
-        //****************************************************************
+        InterfaceUART(const InterfaceUART &)=delete;
+        InterfaceUART(InterfaceUART &&)=delete;
 
+        // ****************************************************************
+        //                            Operators
+        // ****************************************************************
 
+        InterfaceUART &operator=(const InterfaceUART &)=delete;
+        InterfaceUART &operator=(InterfaceUART &&)=delete;
 
-        //****************************************************************
-        //                             Functions
-        //****************************************************************
+        // ****************************************************************
+        //                              Functions
+        // ****************************************************************
 
          /**
           * Initialise a new instance of an UART interface.
@@ -98,7 +100,7 @@ namespace hal::interfaces {
         virtual bool setPins(const uint rx_pin, const uint tx_pin)=0;
 
         /**
-         * Set the RX et TX pin of the UART
+         * Set the RX and TX pins of the UART.
          *
          * @param rx_pin rx pin
          * @param tx_pin tx pin
@@ -107,6 +109,21 @@ namespace hal::interfaces {
         virtual bool setPins(const interfaces::InterfaceDigitalGPIO &rx_pin, const interfaces::InterfaceDigitalGPIO &tx_pin) {
 
             return setPins(rx_pin.getPin(), tx_pin.getPin());
+        }
+
+        /**
+         * Get the RX and TX pins of the UART.
+         *
+         * @param rx_pin hold the rx_pin
+         * @param tx_pin hold the tx_pin
+         * @return whether an error happened
+         */
+        virtual bool getPins(uint &rx_pin, uint &tx_pin) const {
+
+            rx_pin = m_rx_pin;
+            tx_pin = m_tx_pin;
+
+            return false;
         }
 
         /**
@@ -175,9 +192,9 @@ namespace hal::interfaces {
         // InterfaceUART &getInstance(const uint8_t instance) override =0;
 
     protected:
-        //****************************************************************
-        //                   Constructors and Destructor
-        //****************************************************************
+        // ****************************************************************
+        //                    Constructors and Destructor
+        // ****************************************************************
 
         InterfaceUART()
         : m_rx_pin{0}, m_tx_pin{0}, m_baudrate{0}, m_instance{peripherals::UART_INSTANCE0}, m_last_error{Error::NONE} {}
