@@ -63,9 +63,9 @@ namespace hal::peripherals::gpio {
             return *this;
         }
 
-        //****************************************************************
+        // ****************************************************************
         //                             Functions
-        //****************************************************************
+        // ****************************************************************
 
         void init() override {
 
@@ -97,19 +97,15 @@ namespace hal::peripherals::gpio {
 
         bool setPull(const enum Pull gpio_pull) override {
 
-            m_last_error = Error::NONE;
-
             gpio_set_pulls(m_gpio_pin,
                            gpio_pull == Pull::UP,
                            gpio_pull == Pull::DOWN);
 
-            return m_last_error == Error::NONE;
+            return false;
         }
 
         bool setFunction(const enum Function gpio_func) override {
             gpio_function func_;
-
-            m_last_error = Error::NONE;
 
             switch(gpio_func) {
                 case Function::NONE:
@@ -135,16 +131,14 @@ namespace hal::peripherals::gpio {
                     break;
 
                 default:
-                    m_last_error = Error::NOTAVAILABLEONPLATFORM;
+                    hal::errno = Error::NOTAVAILABLEONPLATFORM;
+                    return true;
                     break;
             }
 
-            if(m_last_error == Error::NONE) {
+            gpio_set_function(m_gpio_pin, func_);
 
-                gpio_set_function(m_gpio_pin, func_);
-            }
-
-            return m_last_error != Error::NONE;
+            return false;
         }
 
     protected:

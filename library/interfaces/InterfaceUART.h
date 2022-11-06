@@ -38,7 +38,7 @@ namespace hal::interfaces {
         InterfaceUART &operator=(InterfaceUART &&)=delete;
 
         // ****************************************************************
-        //                              Functions
+        //                             Functions
         // ****************************************************************
 
          /**
@@ -141,16 +141,6 @@ namespace hal::interfaces {
         [[nodiscard]] virtual uint getBaudrate() const=0;
 
         /**
-         * Get the last error that occurred.
-         *
-         * @return last error
-         */
-        virtual enum Error getLastError() const {
-
-            return m_last_error;
-        }
-
-        /**
          * Determine if the UART has been initialised
          *
          * @return true if it has been reinitialised, false otherwise
@@ -197,14 +187,13 @@ namespace hal::interfaces {
         // ****************************************************************
 
         InterfaceUART()
-        : m_rx_pin{0}, m_tx_pin{0}, m_baudrate{0}, m_instance{peripherals::UART_INSTANCE0}, m_last_error{Error::NONE} {}
+        : m_rx_pin{0}, m_tx_pin{0}, m_baudrate{0}, m_instance{} {}
 
         uint m_rx_pin;
         uint m_tx_pin;
         uint m_baudrate;
 
         peripherals::UARTInstance m_instance;
-        enum Error m_last_error;
 
     private:
 

@@ -42,13 +42,13 @@ namespace hal::interfaces {
 
         static bool isSpecialAddress(uint8_t addr) noexcept {
 
-            // I2C_test reserves some addresses for special purposes. We exclude these from the scan.
+            // I2C reserves some addresses for special purposes.
             // These are any addresses of the form 000 0xxx or 111 1xxx
             return (addr & 0x78U) == 0U || (addr & 0x78U) == 0x78U;
         }
 
         // ****************************************************************
-        //                              Functions
+        //                             Functions
         // ****************************************************************
 
         virtual bool init(const uint sda_pin, const uint scl_pin, const uint baudrate)=0;
@@ -78,28 +78,23 @@ namespace hal::interfaces {
 
         [[nodiscard]] virtual uint getBaudrate() const=0;
 
-        virtual enum Error getLastError() const {
-
-            return m_last_error;
-        }
-
         [[nodiscard]] virtual bool isInitialised() const=0;
 
         virtual std::size_t isReadable()=0;
 
         virtual std::size_t isWritable()=0;
 
-        virtual void setMode(const uint8_t addr, const peripherals::i2c::Mode mode)=0;
+        virtual void setMode(const uint8_t addr, const peripherals::Mode mode)=0;
 
         // ----------------------------------------------------------------
 
-        bool scan(uint8_t *buffer, uint8_t length, uint8_t start, uint8_t stop) {
+        void scan(uint8_t *buffer, uint8_t length, uint8_t start, uint8_t stop) {
             // List that will hold the addresses of the available I2C peripherals
 
             // Dummy data
             uint8_t rx_data;
 
-            for(uint8_t addr = start; addr < stop && addr < length && addr < (1U << 7U); ++addr) {
+            for(uint8_t addr = start; addr < stop && addr < length && addr < (1U << 7U); addr++) {
 
                 // Skip reserved address
                 if(isSpecialAddress(addr)) {
@@ -117,14 +112,13 @@ namespace hal::interfaces {
         // ****************************************************************
 
         InterfaceI2C()
-        : m_sda_pin{0}, m_scl_pin{0}, m_frequency{0}, m_instance{peripherals::I2C_INSTANCE0}, m_last_error{Error::NONE} {}
+        : m_sda_pin{0}, m_scl_pin{0}, m_frequency{0}, m_instance{} {}
 
         uint m_sda_pin{};
         uint m_scl_pin{};
         uint m_frequency{};
 
         peripherals::I2CInstance m_instance;
-        enum Error m_last_error;
 
     private:
     };

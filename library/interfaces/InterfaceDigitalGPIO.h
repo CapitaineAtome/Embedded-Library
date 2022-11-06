@@ -29,8 +29,7 @@ namespace hal::interfaces {
                 m_gpio_dir{peripherals::gpio::Direction::OUT},
                 m_gpio_pull{peripherals::gpio::Pull::NONE},
                 m_gpio_func{peripherals::gpio::Function::NONE},
-                m_gpio_irq{peripherals::gpio::IRQ::NONE},
-                m_last_error{Error::NONE}
+                m_gpio_irq{peripherals::gpio::IRQ::NONE}
         {}
 
         /**
@@ -46,8 +45,7 @@ namespace hal::interfaces {
                 m_gpio_dir{dir},
                 m_gpio_pull{peripherals::gpio::Pull::NONE},
                 m_gpio_func{peripherals::gpio::Function::NONE},
-                m_gpio_irq{peripherals::gpio::IRQ::NONE},
-                m_last_error{Error::NONE}
+                m_gpio_irq{peripherals::gpio::IRQ::NONE}
         {}
 
         /**
@@ -64,8 +62,7 @@ namespace hal::interfaces {
                 m_gpio_dir{dir},
                 m_gpio_pull{pull},
                 m_gpio_func{peripherals::gpio::Function::NONE},
-                m_gpio_irq{peripherals::gpio::IRQ::NONE},
-                m_last_error{Error::NONE}
+                m_gpio_irq{peripherals::gpio::IRQ::NONE}
         {}
 
         /**
@@ -83,8 +80,7 @@ namespace hal::interfaces {
                 m_gpio_dir{dir},
                 m_gpio_pull{pull},
                 m_gpio_func{func},
-                m_gpio_irq{peripherals::gpio::IRQ::NONE},
-                m_last_error{Error::NONE}
+                m_gpio_irq{peripherals::gpio::IRQ::NONE}
         {}
 
         /**
@@ -101,14 +97,12 @@ namespace hal::interfaces {
                 m_gpio_pull = other.m_gpio_pull;
                 m_gpio_func = other.m_gpio_func;
                 m_gpio_irq = other.m_gpio_irq;
-                m_last_error = other.m_last_error;
 
                 // other.m_gpio_pin = 0;
                 // other.m_gpio_dir = ???;
                 // other.m_gpio_pull = Pull::NONE;
                 other.m_gpio_func = peripherals::gpio::Function::NONE;
                 // other.m_gpio_irq = IRQ::NONE;
-                // other.m_last_error;
             }
         }
 
@@ -175,7 +169,7 @@ namespace hal::interfaces {
         }
 
         // ****************************************************************
-        //                              Functions
+        //                             Functions
         // ****************************************************************
 
         /**
@@ -296,11 +290,6 @@ namespace hal::interfaces {
         //     return m_gpio_irq;
         // }
 
-        virtual enum Error getLastError() {
-
-            return m_last_error;
-        }
-
     protected:
 
         // ****************************************************************
@@ -313,8 +302,6 @@ namespace hal::interfaces {
         enum peripherals::gpio::Pull m_gpio_pull; ///< Hold the gpio pulling mode ( Up; Down; ... )
         enum peripherals::gpio::Function m_gpio_func; ///< Hold the gpio function, (PWM; I2C; ...)
         enum peripherals::gpio::IRQ m_gpio_irq; ///< Hold the on which condition an interrupt should be raised (Rising or Falling Edge ... )
-
-        enum Error m_last_error;
 
     private:
     };

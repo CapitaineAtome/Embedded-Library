@@ -15,6 +15,8 @@
 #ifndef EMBEDDED_LIBRARY_COMMONS_H
 #define EMBEDDED_LIBRARY_COMMONS_H
 
+#include <atomic>
+
 #include <cstdint>
 #include <cstddef>
 #include <cstring>
@@ -25,7 +27,7 @@
 
 #include "commons_concepts.h"
 
-#ifdef HAL_RP2040
+#ifdef LIB_PICO_PLATFORM
 #include "commons_rp2040.h"
 //#elif defined(HAL_ATMEGA328) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__) // NOTE: NOT IMPLEMENTED YET
 //#include "commons_atmega328p.h"
@@ -68,7 +70,7 @@ namespace hal {
             enum class Direction : uint8_t {
 
                 IN,
-                OUT
+                OUT,
             };
 
             /**
@@ -79,7 +81,7 @@ namespace hal {
                 NONE,
                 UP,
                 DOWN,
-                OPEN_DRAIN
+                OPEN_DRAIN,
             };
 
             /**
@@ -93,7 +95,7 @@ namespace hal {
                 SPI,
                 I2C,
                 PWM,
-                USB
+                USB,
             };
 
             /**
@@ -105,12 +107,12 @@ namespace hal {
                 LEVEL_LOW,
                 LEVEL_HIGH,
                 EDGE_FALL,
-                EDGE_RISE
+                EDGE_RISE,
             };
 
             enum class SlewRate : uint8_t {
                 SLOW,
-                FAST
+                FAST,
             };
 
         } // namespace gpio
@@ -120,30 +122,61 @@ namespace hal {
             enum class Parity : uint8_t {
                 PARITY_NONE,
                 PARITY_EVEN,
-                PARITY_ODD
+                PARITY_ODD,
             };
         } // namespace uart
 
-        namespace i2c {
+        namespace spi {
 
-            enum class Mode : uint8_t {
-                MODE_SLAVE,
-                MODE_MASTER
+            enum class ClockPhase : uint8_t {
+
+                CLOCK_PHASE0,
+                CLOCK_PHASE1,
             };
-        } // namespace i2c
+
+            enum class ClockPolarity : uint8_t {
+
+                CLOCK_POLARITY0,
+                CLOCK_POLARITY1,
+            };
+        }
+
+        enum class Mode : uint8_t {
+            MODE_SLAVE,
+            MODE_MASTER,
+        };
 
     } // namespace peripherals
 
-    enum class [[nodiscard]] Error {
+    enum class BitOrder : uint8_t {
+
+        ORDER_LITTLE_ENDIAN,
+        ORDER_BIG_ENDIAN,
+    };
+
+    enum class Error {
 
         NONE,
         ERROR,
         NOTAVAILABLEONPLATFORM,
+        READ,
+        WRITE,
         TOOSMALL,
         TOOBIG,
-        AGAIN
+        TIMEOUT,
+        AGAIN,
 
     }; // enum class Error
+
+    // ****************************************************************
+    //                         Global Variables
+    // ****************************************************************
+
+    std::atomic<Error> errno;
+
+    // ****************************************************************
+    //                             Functions
+    // ****************************************************************
 
     /**
      * Set a bit in a bitset.
@@ -414,6 +447,20 @@ namespace hal {
     }
 
     /**
+     * Sleep for us microseconds
+     *
+     * @param us number of microseconds to sleep
+     */
+    void sleep_micros(uint64_t us);
+
+    /**
+     * Sleep for ms milliseconds
+     *
+     * @param ms number of milliseconds to sleep
+     */
+    void sleep_millis(uint32_t ms);
+
+    /**
      * Class that is used to pack and unpack data types.
      * Values can be unpacked to another native c++ types or to a buffer for them to be send over
      * a communication wire, protocol ...
@@ -430,7 +477,26 @@ namespace hal {
     public:
 
         TypeSerializer() : m_value{} {}
+        TypeSerializer(const TypeSerializer &other) : m_value{other.m_value} {}
+        TypeSerializer(TypeSerializer &&other) noexcept : m_value{other.m_value} { other.m_value.v64 = 0;}
+
         ~TypeSerializer()=default;
+
+        TypeSerializer &operator=(const TypeSerializer &other) {
+            if(this != &other) {
+                m_value = other.m_value;
+            }
+            return *this;
+        }
+
+        TypeSerializer &operator=(TypeSerializer &&other) noexcept {
+            if(this != &other) {
+                m_value = other.m_value;
+
+                other.m_value.v64 = 0;
+            }
+            return *this;
+        }
 
         /**
          * Pack a value using buffer.
@@ -662,7 +728,7 @@ namespace hal {
         } type_serializer_value;
 
         /**
-         * Member variable that hold the value packed.
+         * Holds the value packed.
          */
         type_serializer_value m_value;
 
@@ -672,20 +738,6 @@ namespace hal {
         static constexpr size_t buffer_size{sizeof(type_serializer_value)};
 
     };
-
-    /**
-     * Sleep for us microseconds
-     *
-     * @param us number of microseconds to sleep
-     */
-    void sleep_micros(uint64_t us);
-
-    /**
-     * Sleep for ms milliseconds
-     *
-     * @param ms number of milliseconds to sleep
-     */
-    void sleep_millis(uint32_t ms);
 
 } // namespace hal
 

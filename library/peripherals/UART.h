@@ -7,7 +7,7 @@
 
 #include "../interfaces/InterfaceUART.h"
 
-#ifdef HAL_RP2040
+#ifdef LIB_PICO_PLATFORM
 #include "UART_rp2040.h"
 // #elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__) // NOTE: NOT IMPLEMENTED YET
 // #include "UART_atmega328p.h"

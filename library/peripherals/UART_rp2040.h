@@ -59,26 +59,24 @@ namespace hal::peripherals::uart {
             }
         }
 
-        //****************************************************************
+        // ****************************************************************
         //                             Functions
-        //****************************************************************
+        // ****************************************************************
 
         bool init(uint rx_pin, uint tx_pin, uint baudrate) override {
-
-            m_last_error = Error::NONE;
 
             m_baudrate = uart_init(hal_to_rp2040_inst(m_instance), baudrate);
             setPins(rx_pin, tx_pin);
             setFormat(8, 1, Parity::PARITY_NONE);
 
-            return m_last_error != Error::NONE;
+            return false;
         }
 
         bool deinit() override {
 
             uart_deinit(hal_to_rp2040_inst(m_instance));
 
-            return m_last_error != Error::NONE;
+            return false;
         }
 
         uint8_t read() override {
@@ -86,7 +84,7 @@ namespace hal::peripherals::uart {
             return uart_getc(hal_to_rp2040_inst(m_instance));
         }
 
-        void read(uint8_t *buffer, const size_t length) override {
+        void read(uint8_t * const buffer, const size_t length) override {
 
             for(size_t i{0}; i < length; i++) {
 
@@ -109,15 +107,13 @@ namespace hal::peripherals::uart {
 
         bool setPins(const uint rx_pin, const uint tx_pin) override {
 
-            m_last_error = Error::NONE;
-
             m_rx_pin = rx_pin;
             m_tx_pin = tx_pin;
 
             gpio_set_function(m_rx_pin, GPIO_FUNC_UART);
             gpio_set_function(m_tx_pin, GPIO_FUNC_UART);
 
-            return m_last_error != Error::NONE;
+            return false;
         }
 
         uint setBaudrate(const uint baudrate) override {

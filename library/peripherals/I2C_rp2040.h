@@ -63,41 +63,35 @@ namespace hal::peripherals::i2c {
         }
 
         // ****************************************************************
-        //                              Functions
+        //                             Functions
         // ****************************************************************
 
         bool init(const uint sda_pin, const uint scl_pin, const uint frequency) override {
-
-            m_last_error = Error::NONE;
 
             m_frequency = i2c_init(hal_to_rp2040_inst(m_instance), frequency);
             setPins(sda_pin, scl_pin);
 
             m_inited = true;
 
-            return m_last_error != Error::NONE;
+            return false;
         }
 
         bool deinit() override {
-
-            m_last_error = Error::NONE;
 
             i2c_deinit(hal_to_rp2040_inst(m_instance));
 
             m_inited = false;
 
-            return m_last_error != Error::NONE;
+            return false;
         }
 
         std::size_t read(const uint8_t addr, uint8_t *cmd, const size_t length, const bool nostop) override {
 
             auto tmp = i2c_read_blocking(hal_to_rp2040_inst(m_instance), addr, cmd, length, nostop);
 
-            m_last_error = Error::NONE;
-
             if(tmp < 0) {
 
-                m_last_error = Error::ERROR;
+                hal::errno = Error::WRITE;
                 return 0;
 
             } else {
@@ -109,35 +103,54 @@ namespace hal::peripherals::i2c {
         std::size_t readfrom(const uint8_t addr, const uint8_t reg, uint8_t *buffer, const size_t length, bool nostop) {
 
             selectRegister(addr, reg);
-            i2c_read_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
+            auto temp_ = i2c_read_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
+
+            if(temp_ < 0) {
+
+                if(temp_ == PICO_ERROR_TIMEOUT) {
+                    hal::errno = Error::TIMEOUT;
+                }
+                else {
+                    hal::errno = Error::READ;
+                }
+            }
+
+            return temp_;
         }
 
         std::size_t writeto(const uint8_t addr, const uint8_t reg, const uint8_t * const buffer, const size_t length, bool nostop) {
 
             selectRegister(addr, reg);
-            i2c_write_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
+            auto temp_ = i2c_write_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
+
+            if(temp_ < 0) {
+
+                if(temp_ == PICO_ERROR_TIMEOUT) {
+                    hal::errno = Error::TIMEOUT;
+                }
+                else {
+                    hal::errno = Error::READ;
+                }
+            }
+
+            return temp_;
         }
 
         std::size_t write(const uint8_t addr, const uint8_t * const cmd, const size_t length, const bool nostop) override {
 
             auto tmp = i2c_write_blocking(hal_to_rp2040_inst(m_instance), addr, cmd, length, nostop);
 
-            m_last_error = Error::NONE;
-
             if(tmp < 0) {
 
-                m_last_error = Error::ERROR;
+                hal::errno = Error::READ;
                 return 0;
 
-            } else {
-
-                return static_cast<size_t>(tmp);
             }
+
+            return static_cast<size_t>(tmp);
         }
 
         bool setPins(const uint sda_pin, const uint scl_pin) override {
-
-            m_last_error = Error::NONE;
 
             m_sda_pin = sda_pin;
             m_scl_pin = scl_pin;
@@ -148,7 +161,7 @@ namespace hal::peripherals::i2c {
             gpio_pull_up(m_sda_pin);
             gpio_pull_up(m_scl_pin);
 
-            return m_last_error != Error::NONE;
+            return false;
         }
 
         uint setFrequency(const uint frequency) override {
@@ -176,7 +189,7 @@ namespace hal::peripherals::i2c {
             return i2c_get_write_available(hal_to_rp2040_inst(m_instance));
         }
 
-        void setMode(const uint8_t addr, const peripherals::i2c::Mode mode) override {
+        void setMode(const uint8_t addr, const peripherals::Mode mode) override {
 
             i2c_set_slave_mode(hal_to_rp2040_inst(m_instance), mode == Mode::MODE_SLAVE, addr);
         }
@@ -185,7 +198,7 @@ namespace hal::peripherals::i2c {
         // ****************************************************************
         //                    Constructors and Destructor
         // ****************************************************************
-        explicit I2C(const peripherals::I2CInstance instance) : InterfaceI2C(), m_inited{false} {
+        explicit I2C(const I2CInstance instance) : InterfaceI2C(), m_inited{false} {
 
             m_instance = instance;
         }

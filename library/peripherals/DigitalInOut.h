@@ -7,7 +7,7 @@
 
 #include "../interfaces/InterfaceDigitalGPIO.h"
 
-#ifdef HAL_RP2040
+#ifdef LIB_PICO_PLATFORM
 #include "DigitalInOut_rp2040.h"
 // #elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__) // NOTE: NOT IMPLEMENTED YET
 // #include "DigitalOut_atmega328p.h"
