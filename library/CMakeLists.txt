@@ -70,7 +70,7 @@ add_library(${HARDWARE_LIB_NAME} INTERFACE
         peripherals/DigitalInOut.h
         interfaces/InterfaceDigitalGPIO.h
         interfaces/InterfaceUART.h
-        interfaces/InterfaceI2C.h peripherals/UART.h peripherals/I2C.h)
+        interfaces/InterfaceI2C.h peripherals/UART.h peripherals/I2C.h peripherals/SPI.h interfaces/InterfaceSPI.h)
 
 add_library(${IMPLEMENTATION_RP2040}
         traits/NonCopyable.h
@@ -80,7 +80,7 @@ add_library(${IMPLEMENTATION_RP2040}
         peripherals/DigitalInOut.h
         interfaces/InterfaceDigitalGPIO.h
         interfaces/InterfaceUART.h
-        interfaces/InterfaceI2C.h peripherals/UART.h peripherals/UART_rp2040.h peripherals/I2C.h peripherals/I2C_rp2040.h)
+        interfaces/InterfaceI2C.h peripherals/UART.h peripherals/UART_rp2040.h peripherals/I2C.h peripherals/I2C_rp2040.h peripherals/SPI_rp2040.h)
 
 target_link_libraries(${IMPLEMENTATION_RP2040}
         pico_stdlib
@@ -104,7 +104,12 @@ add_executable(Dummy_Executable
         traits/Singleton.h
         interfaces/InterfaceDigitalGPIO.h
         peripherals/DigitalInOut.h
-        peripherals/UART.h peripherals/UART_rp2040.h peripherals/I2C.h peripherals/I2C_rp2040.h)
+        peripherals/UART.h
+        peripherals/UART_rp2040.h
+        peripherals/I2C.h
+        peripherals/I2C_rp2040.h
+        peripherals/SPI.h
+        peripherals/SPI_rp2040.h)
 
 target_link_libraries(Dummy_Executable
         pico_stdlib
