@@ -13,3 +13,13 @@ _deps
 /tests/cmake-build-debug-arm/
 /tests/cmake-build-release/
 /tests/cmake-build-release-arm/
+/library/cmake-build-debug/
+/library/cmake-build-debug-arm/
+/library/cmake-build-release/
+/library/cmake-build-release-arm/
+/notes/
+/venv/
+/docs/latex/
+/docs/html/
+/docs/xml/
+/docs/sphinx/build/
