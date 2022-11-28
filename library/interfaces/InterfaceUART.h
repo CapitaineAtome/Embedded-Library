@@ -51,7 +51,7 @@ namespace hal::interfaces {
           * @param baudrate value of the baud rate
           * @return whether an error occurred or not
           */
-        virtual bool init(uint rx_pin, uint tx_pin, uint baudrate)=0;
+        virtual bool init(const pin_t &rx_pin, const pin_t &tx_pin, uint baudrate)=0;
 
         /**
          * Deinitialise an instance of the UART.
@@ -97,7 +97,7 @@ namespace hal::interfaces {
          * @param tx_pin tx pin
          * @return whether an error occurred
          */
-        virtual bool setPins(const uint rx_pin, const uint tx_pin)=0;
+        virtual bool setPins(const pin_t rx_pin, const pin_t tx_pin)=0;
 
         /**
          * Set the RX and TX pins of the UART.
@@ -118,7 +118,7 @@ namespace hal::interfaces {
          * @param tx_pin hold the tx_pin
          * @return whether an error happened
          */
-        virtual bool getPins(uint &rx_pin, uint &tx_pin) const {
+        virtual bool getPins(pin_t &rx_pin, pin_t &tx_pin) const {
 
             rx_pin = m_rx_pin;
             tx_pin = m_tx_pin;
@@ -189,8 +189,9 @@ namespace hal::interfaces {
         InterfaceUART()
         : m_rx_pin{0}, m_tx_pin{0}, m_baudrate{0}, m_instance{} {}
 
-        uint m_rx_pin;
-        uint m_tx_pin;
+        pin_t m_rx_pin;
+        pin_t m_tx_pin;
+
         uint m_baudrate;
 
         peripherals::UARTInstance m_instance;

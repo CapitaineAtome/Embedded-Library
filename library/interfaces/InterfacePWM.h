@@ -47,20 +47,36 @@ namespace hal::interfaces {
         //                             Functions
         // ****************************************************************
 
-        virtual bool init(const uint pwm_pin, const uint frequency, const uint8_t duty_cycle, bool start)=0;
+        virtual bool init(const uint32_t frequency, const uint8_t duty_cycle, bool start)=0;
+
+        virtual void setFrequency(uint32_t frequency, bool start)=0;
+        virtual uint32_t getFrequency() const {
+
+            return m_frequency;
+        }
+
+        virtual void setDutyCycle(uint8_t duty_cycle)=0;
+
+        virtual uint8_t getDutyCycle() const {
+
+            return m_duty_cycle;
+        }
+
+        virtual uint8_t getPulseWidth() const =0;
 
         virtual uint read()=0;
         virtual void write(const uint value)=0;
-        // InterfaceUART &getInstance(const uint8_t instance) override =0;
+
+        // InterfacePWM &getInstance(const uint8_t instance) override =0;
 
     protected:
         // ****************************************************************
         //                    Constructors and Destructor
         // ****************************************************************
 
-        InterfacePWM()= default;
+        InterfacePWM() : m_pwm_pin{}, m_frequency{}, m_duty_cycle{} {}
 
-        uint m_pwm_pin;
+        pin_t m_pwm_pin;
         /// In kHz
         uint32_t m_frequency;
         /// Between [0; 100]

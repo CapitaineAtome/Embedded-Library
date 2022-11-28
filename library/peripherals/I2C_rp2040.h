@@ -66,7 +66,7 @@ namespace hal::peripherals::i2c {
         //                             Functions
         // ****************************************************************
 
-        bool init(const uint sda_pin, const uint scl_pin, const uint frequency) override {
+        bool init(const pin_t &sda_pin, const pin_t &scl_pin, const uint frequency) override {
 
             m_frequency = i2c_init(hal_to_rp2040_inst(m_instance), frequency);
             setPins(sda_pin, scl_pin);
@@ -150,16 +150,16 @@ namespace hal::peripherals::i2c {
             return static_cast<size_t>(tmp);
         }
 
-        bool setPins(const uint sda_pin, const uint scl_pin) override {
+        bool setPins(const pin_t &sda_pin, const pin_t &scl_pin) override {
 
             m_sda_pin = sda_pin;
             m_scl_pin = scl_pin;
 
-            gpio_set_function(m_sda_pin, GPIO_FUNC_I2C);
-            gpio_set_function(m_scl_pin, GPIO_FUNC_I2C);
+            gpio_set_function(m_sda_pin.pin, GPIO_FUNC_I2C);
+            gpio_set_function(m_scl_pin.pin, GPIO_FUNC_I2C);
 
-            gpio_pull_up(m_sda_pin);
-            gpio_pull_up(m_scl_pin);
+            gpio_pull_up(m_sda_pin.pin);
+            gpio_pull_up(m_scl_pin.pin);
 
             return false;
         }

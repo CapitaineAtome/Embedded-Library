@@ -63,7 +63,7 @@ namespace hal::peripherals::uart {
         //                             Functions
         // ****************************************************************
 
-        bool init(uint rx_pin, uint tx_pin, uint baudrate) override {
+        bool init(const pin_t &rx_pin, const pin_t &tx_pin, uint baudrate) override {
 
             m_baudrate = uart_init(hal_to_rp2040_inst(m_instance), baudrate);
             setPins(rx_pin, tx_pin);
@@ -105,13 +105,13 @@ namespace hal::peripherals::uart {
             }
         }
 
-        bool setPins(const uint rx_pin, const uint tx_pin) override {
+        bool setPins(const pin_t rx_pin, const pin_t tx_pin) override {
 
             m_rx_pin = rx_pin;
             m_tx_pin = tx_pin;
 
-            gpio_set_function(m_rx_pin, GPIO_FUNC_UART);
-            gpio_set_function(m_tx_pin, GPIO_FUNC_UART);
+            gpio_set_function(m_rx_pin.pin, GPIO_FUNC_UART);
+            gpio_set_function(m_tx_pin.pin, GPIO_FUNC_UART);
 
             return false;
         }

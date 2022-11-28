@@ -31,7 +31,9 @@ namespace hal::peripherals::gpio {
 
             if(this != &other) {
 
-                m_gpio_pin = other.m_gpio_pin;
+                memcpy(&m_gpio_pin, &other.m_gpio_pin, sizeof(m_gpio_pin));
+                memset(&other.m_gpio_pin, 0, sizeof(other.m_gpio_pin));
+
                 m_gpio_dir = other.m_gpio_dir;
                 m_gpio_pull = other.m_gpio_pull;
                 m_gpio_func = other.m_gpio_func;
@@ -53,7 +55,7 @@ namespace hal::peripherals::gpio {
 
             if(this != &other) {
 
-                m_gpio_pin = other.m_gpio_pin;
+                m_gpio_pin.pin = other.m_gpio_pin.pin;
                 m_gpio_dir = other.m_gpio_dir;
                 m_gpio_pull = other.m_gpio_pull;
                 m_gpio_func = other.m_gpio_func;
@@ -70,34 +72,34 @@ namespace hal::peripherals::gpio {
         void init() override {
 
             if( !inited() ) {
-                gpio_init(m_gpio_pin);
+                gpio_init(m_gpio_pin.pin);
             }
         }
 
         void deinit() override {
 
-            gpio_deinit(m_gpio_pin);
+            gpio_deinit(m_gpio_pin.pin);
             m_gpio_func = Function::NONE;
         }
 
         uint8_t read() override {
 
-            return gpio_get(m_gpio_pin);
+            return gpio_get(m_gpio_pin.pin);
         }
 
         void write(const uint8_t value) override {
-            return gpio_put(m_gpio_pin, value);
+            return gpio_put(m_gpio_pin.pin, value);
         }
 
         bool setDirection(const enum Direction gpio_dir) override {
-            gpio_set_dir(m_gpio_pin, gpio_dir == Direction::OUT);
+            gpio_set_dir(m_gpio_pin.pin, gpio_dir == Direction::OUT);
 
             return false;
         }
 
         bool setPull(const enum Pull gpio_pull) override {
 
-            gpio_set_pulls(m_gpio_pin,
+            gpio_set_pulls(m_gpio_pin.pin,
                            gpio_pull == Pull::UP,
                            gpio_pull == Pull::DOWN);
 
@@ -136,7 +138,7 @@ namespace hal::peripherals::gpio {
                     break;
             }
 
-            gpio_set_function(m_gpio_pin, func_);
+            gpio_set_function(m_gpio_pin.pin, func_);
 
             return false;
         }

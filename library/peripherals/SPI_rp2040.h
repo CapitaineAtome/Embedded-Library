@@ -68,9 +68,9 @@ class SPI : public interfaces::InterfaceSPI {
         //                             Functions
         // ****************************************************************
 
-        bool init(const uint sck_pin,
-                  const uint mosi_pin,
-                  const uint miso_pin,
+        bool init(const pin_t &sck_pin,
+                  const pin_t &mosi_pin,
+                  const pin_t &miso_pin,
                   const uint frequency) override {
 
             m_sck_pin = sck_pin;
@@ -79,9 +79,9 @@ class SPI : public interfaces::InterfaceSPI {
 
             m_frequency = spi_init(hal_to_rp2040_inst(m_instance), frequency);
 
-            gpio_set_function(m_sck_pin, GPIO_FUNC_SPI);
-            gpio_set_function(m_mosi_pin, GPIO_FUNC_SPI);
-            gpio_set_function(m_miso_pin, GPIO_FUNC_SPI);
+            gpio_set_function(m_sck_pin.pin, GPIO_FUNC_SPI);
+            gpio_set_function(m_mosi_pin.pin, GPIO_FUNC_SPI);
+            gpio_set_function(m_miso_pin.pin, GPIO_FUNC_SPI);
 
             m_inited = true;
 

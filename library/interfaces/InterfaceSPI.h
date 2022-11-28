@@ -46,9 +46,9 @@ namespace hal::interfaces {
         //                             Functions
         // ****************************************************************
 
-        virtual bool init(const uint sck_pin,
-                          const uint mosi_pin,
-                          const uint miso_pin,
+        virtual bool init(const pin_t &sck_pin,
+                          const pin_t &mosi_pin,
+                          const pin_t &miso_pin,
                           const uint frequency)=0;
 
         virtual bool deinit()=0;
@@ -89,9 +89,10 @@ namespace hal::interfaces {
         InterfaceSPI()
         : m_sck_pin{0}, m_mosi_pin{0}, m_miso_pin{0}, m_frequency{0}, m_mode{}, m_instance{} {}
 
-        uint m_sck_pin;
-        uint m_mosi_pin;
-        uint m_miso_pin;
+        pin_t m_sck_pin;
+        pin_t m_mosi_pin;
+        pin_t m_miso_pin;
+
         uint m_frequency;
 
         peripherals::Mode m_mode;

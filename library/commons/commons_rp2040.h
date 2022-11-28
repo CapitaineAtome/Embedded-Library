@@ -34,7 +34,7 @@ namespace hal {
 
     } // namespace peripherals
 
-    enum pin : uint {
+    enum PIN : uint {
 
         GPIO0 = 0,
         GPIO1 = 1,
@@ -71,6 +71,20 @@ namespace hal {
 
         NUMBER_GPIO_PIN,
     };
+
+    typedef struct {
+
+        uint pin;
+
+    } pin_t;
+
+
+    pin_t pin(const uint number) {
+
+        pin_t pin_{.pin = number};
+
+        return pin_;
+    }
 
     void sleep_micros(uint64_t us) {
 

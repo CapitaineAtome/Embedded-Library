@@ -226,7 +226,7 @@ namespace hal::interfaces {
         /**
          *
          */
-        virtual uint getPin() const noexcept {
+        virtual pin_t getPin() const noexcept {
 
             return m_gpio_pin;
         }
@@ -296,7 +296,7 @@ namespace hal::interfaces {
         //                            Members
         // ****************************************************************
 
-        uint m_gpio_pin; ///< Hold the gpio pin
+        pin_t m_gpio_pin; ///< Hold the gpio pin
 
         enum peripherals::gpio::Direction m_gpio_dir; ///< Hold the gpio direction, (Input; Output)
         enum peripherals::gpio::Pull m_gpio_pull; ///< Hold the gpio pulling mode ( Up; Down; ... )

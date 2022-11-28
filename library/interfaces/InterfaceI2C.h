@@ -51,7 +51,7 @@ namespace hal::interfaces {
         //                             Functions
         // ****************************************************************
 
-        virtual bool init(const uint sda_pin, const uint scl_pin, const uint baudrate)=0;
+        virtual bool init(const pin_t &sda_pin, const pin_t &scl_pin, const uint baudrate)=0;
 
         virtual bool deinit()=0;
 
@@ -64,9 +64,9 @@ namespace hal::interfaces {
 
         virtual std::size_t write(const uint8_t addr, const uint8_t * const cmd, const size_t length, const bool nostop)=0;
 
-        virtual bool setPins(const uint sda_pin, const uint scl_pin)=0;
+        virtual bool setPins(const pin_t &sda_pin, const pin_t &scl_pin)=0;
 
-        virtual bool getPins(uint &sda_pin, uint &scl_pin) const {
+        virtual bool getPins(pin_t &sda_pin, pin_t &scl_pin) const {
 
             sda_pin = m_sda_pin;
             scl_pin = m_scl_pin;
@@ -114,8 +114,9 @@ namespace hal::interfaces {
         InterfaceI2C()
         : m_sda_pin{0}, m_scl_pin{0}, m_frequency{0}, m_instance{} {}
 
-        uint m_sda_pin{};
-        uint m_scl_pin{};
+        pin_t m_sda_pin{};
+        pin_t m_scl_pin{};
+
         uint m_frequency{};
 
         peripherals::I2CInstance m_instance;
