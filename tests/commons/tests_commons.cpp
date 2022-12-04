@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 
 #include "commons/commons.h"
+#include "etl/TypeSerializer.h"
 
 #include <limits>
 
@@ -16,26 +17,26 @@ TEST(CommonsTest, set_bit) {
     // --------------------------------
     bitset = 0xFF;
     pos = 1;
-    hal::set_bit(bitset, pos);
+    commons::set_bit(bitset, pos);
 
     EXPECT_EQ(bitset, 0b11111111);
 
     // --------------------------------
     bitset = 0xF0;
     pos = 3;
-    hal::set_bit(bitset, pos);
+    commons::set_bit(bitset, pos);
     EXPECT_EQ(bitset, 0b11111000);
 
     // --------------------------------
     bitset = 0x0F;
     pos = 12;
-    hal::set_bit(bitset, pos);
+    commons::set_bit(bitset, pos);
     EXPECT_EQ(bitset, 0b00001111);
 
     // --------------------------------
     bitset = 0x00;
     pos = -4;
-    hal::set_bit(bitset, pos);
+    commons::set_bit(bitset, pos);
     EXPECT_EQ(bitset, 0b00000000);
 }
 
@@ -47,26 +48,26 @@ TEST(CommonsTest, clear_bit) {
     // --------------------------------
     bitset = 0xFF;
     pos = 1;
-    hal::clear_bit(bitset, pos);
+    commons::clear_bit(bitset, pos);
 
     EXPECT_EQ(bitset, 0b11111101);
 
     // --------------------------------
     bitset = 0xF0;
     pos = 3;
-    hal::clear_bit(bitset, pos);
+    commons::clear_bit(bitset, pos);
     EXPECT_EQ(bitset, 0b11110000);
 
     // --------------------------------
     bitset = 0x0F;
     pos = 12;
-    hal::clear_bit(bitset, pos);
+    commons::clear_bit(bitset, pos);
     EXPECT_EQ(bitset, 0b00001111);
 
     // --------------------------------
     bitset = 0x00;
     pos = -4;
-    hal::clear_bit(bitset, pos);
+    commons::clear_bit(bitset, pos);
     EXPECT_EQ(bitset, 0b00000000);
 }
 
@@ -78,26 +79,26 @@ TEST(CommonsTest, toggle_bit) {
     // --------------------------------
     bitset = 0xFF;
     pos = 1;
-    hal::toggle_bit(bitset, pos);
+    commons::toggle_bit(bitset, pos);
 
     EXPECT_EQ(bitset, 0b11111101);
 
     // --------------------------------
     bitset = 0xF0;
     pos = 6;
-    hal::toggle_bit(bitset, pos);
+    commons::toggle_bit(bitset, pos);
     EXPECT_EQ(bitset, 0b10110000);
 
     // --------------------------------
     bitset = 0x0F;
     pos = 12;
-    hal::toggle_bit(bitset, pos);
+    commons::toggle_bit(bitset, pos);
     EXPECT_EQ(bitset, 0b00001111);
 
     // --------------------------------
     bitset = 0x00;
     pos = -4;
-    hal::toggle_bit(bitset, pos);
+    commons::toggle_bit(bitset, pos);
     EXPECT_EQ(bitset, 0b00000000);
 }
 
@@ -110,25 +111,25 @@ TEST(CommonsTest, check_bit) {
     bitset = 0xFF;
     pos = 1;
 
-    EXPECT_EQ(hal::check_bit(bitset, pos), true);
+    EXPECT_EQ(commons::check_bit(bitset, pos), true);
 
     // --------------------------------
     bitset = 0xF0;
     pos = 3;
 
-    EXPECT_EQ(hal::check_bit(bitset, pos), false);
+    EXPECT_EQ(commons::check_bit(bitset, pos), false);
 
     // --------------------------------
     bitset = 0x0F;
     pos = 12;
 
-    EXPECT_EQ(hal::check_bit(bitset, pos), false);
+    EXPECT_EQ(commons::check_bit(bitset, pos), false);
 
     // --------------------------------
     bitset = 0x00;
     pos = -4;
 
-    EXPECT_EQ(hal::check_bit(bitset, pos), false);
+    EXPECT_EQ(commons::check_bit(bitset, pos), false);
 }
 
 TEST(CommonsTest, set_bit_pos) {
@@ -142,7 +143,7 @@ TEST(CommonsTest, set_bit_pos) {
     pos = 2;
     value = 0xF;
 
-    hal::set_bits_pos(bitset, pos, value);
+    commons::set_bits_pos(bitset, pos, value);
 
     EXPECT_EQ(bitset, 0b00111100);
 
@@ -151,7 +152,7 @@ TEST(CommonsTest, set_bit_pos) {
     pos = 4;
     value = 0;
 
-    hal::set_bits_pos(bitset, pos, value);
+    commons::set_bits_pos(bitset, pos, value);
 
     EXPECT_EQ(bitset, bitset);
 
@@ -160,7 +161,7 @@ TEST(CommonsTest, set_bit_pos) {
     pos = 3;
     value = 1;
 
-    hal::set_bits_pos(bitset, pos, value);
+    commons::set_bits_pos(bitset, pos, value);
 
     EXPECT_EQ(bitset, 0b11111001);
 
@@ -169,7 +170,7 @@ TEST(CommonsTest, set_bit_pos) {
     pos = 1;
     value = 3;
 
-    hal::set_bits_pos(bitset, pos, value);
+    commons::set_bits_pos(bitset, pos, value);
 
     EXPECT_EQ(bitset, 0b00010111);
 }
@@ -183,7 +184,7 @@ TEST(CommonsTest, set_bits) {
     bitset = 0xFF;
     bitmask = 0;
 
-    hal::set_bits(bitset, bitmask);
+    commons::set_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0xFF);
 
@@ -191,7 +192,7 @@ TEST(CommonsTest, set_bits) {
     bitset = 0xF1;
     bitmask = 0x18;
 
-    hal::set_bits(bitset, bitmask);
+    commons::set_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0xF9);
 
@@ -199,7 +200,7 @@ TEST(CommonsTest, set_bits) {
     bitset = 0x0F;
     bitmask = 0xF0;
 
-    hal::set_bits(bitset, bitmask);
+    commons::set_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0xFF);
 
@@ -207,7 +208,7 @@ TEST(CommonsTest, set_bits) {
     bitset = 0x00;
     bitmask = 0x18;
 
-    hal::set_bits(bitset, bitmask);
+    commons::set_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0x18);
 }
@@ -221,7 +222,7 @@ TEST(CommonsTest, clear_bits) {
     bitset = 0x18;
     bitmask = 0x18;
 
-    hal::clear_bits(bitset, bitmask);
+    commons::clear_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0b00000000);
 
@@ -229,7 +230,7 @@ TEST(CommonsTest, clear_bits) {
     bitset = 0xFF;
     bitmask = 0x0F;
 
-    hal::clear_bits(bitset, bitmask);
+    commons::clear_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0xF0);
 
@@ -237,7 +238,7 @@ TEST(CommonsTest, clear_bits) {
     bitset = 0xFF;
     bitmask = 0xFF0;
 
-    hal::clear_bits(bitset, bitmask);
+    commons::clear_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0x0F);
 
@@ -245,7 +246,7 @@ TEST(CommonsTest, clear_bits) {
     bitset = 0x00;
     bitmask = 0xFF;
 
-    hal::clear_bits(bitset, bitmask);
+    commons::clear_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0);
 }
@@ -259,7 +260,7 @@ TEST(CommonsTest, toggle_bits) {
     bitset = 0xFF;
     bitmask = 0x1;
 
-    hal::toggle_bits(bitset, bitmask);
+    commons::toggle_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0xFE);
 
@@ -267,7 +268,7 @@ TEST(CommonsTest, toggle_bits) {
     bitset = 0xF0;
     bitmask = 0x0F;
 
-    hal::toggle_bits(bitset, bitmask);
+    commons::toggle_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0xFF);
 
@@ -275,7 +276,7 @@ TEST(CommonsTest, toggle_bits) {
     bitset = 0x0F;
     bitmask = 0x0F;
 
-    hal::toggle_bits(bitset, bitmask);
+    commons::toggle_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0);
 
@@ -283,7 +284,7 @@ TEST(CommonsTest, toggle_bits) {
     bitset = 0x18;
     bitmask = 0x81;
 
-    hal::toggle_bits(bitset, bitmask);
+    commons::toggle_bits(bitset, bitmask);
 
     EXPECT_EQ(bitset, 0x99);
 }
@@ -297,27 +298,27 @@ TEST(CommonsTest, check_bits) {
     bitset = 0xFF;
     bitmask = 0x18;
 
-    EXPECT_EQ(hal::check_bits(bitset, bitmask), true);
+    EXPECT_EQ(commons::check_bits(bitset, bitmask), true);
 
     // --------------------------------
     bitset = 0xF0;
     bitmask = 0x00;
 
-    hal::check_bits(bitset, bitmask);
+    commons::check_bits(bitset, bitmask);
 
-    EXPECT_EQ(hal::check_bits(bitset, bitmask), true);
+    EXPECT_EQ(commons::check_bits(bitset, bitmask), true);
 
     // --------------------------------
     bitset = 0x0F;
     bitmask = 0xFF;
 
-    EXPECT_EQ(hal::check_bits(bitset, bitmask), false);
+    EXPECT_EQ(commons::check_bits(bitset, bitmask), false);
 
     // --------------------------------
     bitset = 0x99;
     bitmask = 0x11;
 
-    EXPECT_EQ(hal::check_bits(bitset, bitmask), true);
+    EXPECT_EQ(commons::check_bits(bitset, bitmask), true);
 }
 
 TEST(CommonsTest, sizeof_array) {
@@ -331,12 +332,12 @@ TEST(CommonsTest, sizeof_array) {
     float       arrayf[array_size];
     double      arrayd[array_size];
 
-    EXPECT_EQ(hal::sizeof_array(array8), array_size);
-    EXPECT_EQ(hal::sizeof_array(array16), array_size);
-    EXPECT_EQ(hal::sizeof_array(array32), array_size);
-    EXPECT_EQ(hal::sizeof_array(array64), array_size);
-    EXPECT_EQ(hal::sizeof_array(arrayf), array_size);
-    EXPECT_EQ(hal::sizeof_array(arrayd), array_size);
+    EXPECT_EQ(commons::sizeof_array(array8), array_size);
+    EXPECT_EQ(commons::sizeof_array(array16), array_size);
+    EXPECT_EQ(commons::sizeof_array(array32), array_size);
+    EXPECT_EQ(commons::sizeof_array(array64), array_size);
+    EXPECT_EQ(commons::sizeof_array(arrayf), array_size);
+    EXPECT_EQ(commons::sizeof_array(arrayd), array_size);
 }
 
 TEST(TypeSerializer, set_get) {
@@ -359,7 +360,7 @@ TEST(TypeSerializer, set_get) {
     double      base_valued{1234567890123456789.1234567890123456789};
     double      valued{};
 
-    hal::TypeSerializer ts{};
+    etl::TypeSerializer ts{};
 
     ts << base_value8;
     ts >> value8;
@@ -413,7 +414,7 @@ TEST(TypeSerializer, clear) {
     double      base_valued{1234567890123456789.1234567890123456789};
     double      valued{};
 
-    hal::TypeSerializer ts{};
+    etl::TypeSerializer ts{};
 
     ts << base_value8;
     ts.clear();
@@ -477,35 +478,35 @@ TEST(TypeSerializer, unpack) {
     // Big buffer just in case
     uint8_t buffer[16]{};
 
-    hal::TypeSerializer ts{};
+    etl::TypeSerializer ts{};
 
     ts << base_value8;
-    ts.unpack(buffer, hal::sizeof_array(buffer));
+    ts.unpack(buffer, commons::sizeof_array(buffer));
 
     EXPECT_EQ(*reinterpret_cast<uint8_t*>(buffer), base_value8);
 
     ts << base_value16;
-    ts.unpack(buffer, hal::sizeof_array(buffer));
+    ts.unpack(buffer, commons::sizeof_array(buffer));
 
     EXPECT_EQ(*reinterpret_cast<uint16_t*>(buffer), base_value16);
 
     ts << base_value32;
-    ts.unpack(buffer, hal::sizeof_array(buffer));
+    ts.unpack(buffer, commons::sizeof_array(buffer));
 
     EXPECT_EQ(*reinterpret_cast<uint32_t*>(buffer), base_value32);
 
     ts << base_value64;
-    ts.unpack(buffer, hal::sizeof_array(buffer));
+    ts.unpack(buffer, commons::sizeof_array(buffer));
 
     EXPECT_EQ(*reinterpret_cast<uint64_t*>(buffer), base_value64);
 
     ts << base_valuef;
-    ts.unpack(buffer, hal::sizeof_array(buffer));
+    ts.unpack(buffer, commons::sizeof_array(buffer));
 
     EXPECT_EQ(*reinterpret_cast<float*>(buffer), base_valuef);
 
     ts << base_valued;
-    ts.unpack(buffer, hal::sizeof_array(buffer));
+    ts.unpack(buffer, commons::sizeof_array(buffer));
 
     EXPECT_EQ(*reinterpret_cast<double*>(buffer), base_valued);
 }
@@ -534,41 +535,41 @@ TEST(TypeSerializer, pack) {
     uint8_t buffer[8]{};
     uint8_t tmp_buff[8]{};
 
-    hal::TypeSerializer ts{};
+    etl::TypeSerializer ts{};
 
     memcpy(buffer, &base_value8, sizeof(base_value8));
-    ts.pack(buffer, hal::sizeof_array(buffer));
-    ts.unpack(tmp_buff, hal::sizeof_array(tmp_buff));
+    ts.pack(buffer, commons::sizeof_array(buffer));
+    ts.unpack(tmp_buff, commons::sizeof_array(tmp_buff));
 
-    EXPECT_EQ(memcmp(buffer, tmp_buff, hal::sizeof_array(buffer)), 0);
+    EXPECT_EQ(memcmp(buffer, tmp_buff, commons::sizeof_array(buffer)), 0);
 
     memcpy(buffer, &base_value16, sizeof(base_value16));
-    ts.pack(buffer, hal::sizeof_array(buffer));
-    ts.unpack(tmp_buff, hal::sizeof_array(tmp_buff));
+    ts.pack(buffer, commons::sizeof_array(buffer));
+    ts.unpack(tmp_buff, commons::sizeof_array(tmp_buff));
 
-    EXPECT_EQ(memcmp(buffer, tmp_buff, hal::sizeof_array(buffer)), 0);
+    EXPECT_EQ(memcmp(buffer, tmp_buff, commons::sizeof_array(buffer)), 0);
 
     memcpy(buffer, &base_value32, sizeof(base_value32));
-    ts.pack(buffer, hal::sizeof_array(buffer));
-    ts.unpack(tmp_buff, hal::sizeof_array(tmp_buff));
+    ts.pack(buffer, commons::sizeof_array(buffer));
+    ts.unpack(tmp_buff, commons::sizeof_array(tmp_buff));
 
-    EXPECT_EQ(memcmp(buffer, tmp_buff, hal::sizeof_array(buffer)), 0);
+    EXPECT_EQ(memcmp(buffer, tmp_buff, commons::sizeof_array(buffer)), 0);
 
     memcpy(buffer, &base_value64, sizeof(base_value64));
-    ts.pack(buffer, hal::sizeof_array(buffer));
-    ts.unpack(tmp_buff, hal::sizeof_array(tmp_buff));
+    ts.pack(buffer, commons::sizeof_array(buffer));
+    ts.unpack(tmp_buff, commons::sizeof_array(tmp_buff));
 
-    EXPECT_EQ(memcmp(buffer, tmp_buff, hal::sizeof_array(buffer)), 0);
+    EXPECT_EQ(memcmp(buffer, tmp_buff, commons::sizeof_array(buffer)), 0);
 
     memcpy(buffer, &base_valuef, sizeof(base_valuef));
-    ts.pack(buffer, hal::sizeof_array(buffer));
-    ts.unpack(tmp_buff, hal::sizeof_array(tmp_buff));
+    ts.pack(buffer, commons::sizeof_array(buffer));
+    ts.unpack(tmp_buff, commons::sizeof_array(tmp_buff));
 
-    EXPECT_EQ(memcmp(buffer, tmp_buff, hal::sizeof_array(buffer)), 0);
+    EXPECT_EQ(memcmp(buffer, tmp_buff, commons::sizeof_array(buffer)), 0);
 
     memcpy(buffer, &base_valued, sizeof(base_valued));
-    ts.pack(buffer, hal::sizeof_array(buffer));
-    ts.unpack(tmp_buff, hal::sizeof_array(tmp_buff));
+    ts.pack(buffer, commons::sizeof_array(buffer));
+    ts.unpack(tmp_buff, commons::sizeof_array(tmp_buff));
 
-    EXPECT_EQ(memcmp(buffer, tmp_buff, hal::sizeof_array(buffer)), 0);
+    EXPECT_EQ(memcmp(buffer, tmp_buff, commons::sizeof_array(buffer)), 0);
 }

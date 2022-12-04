@@ -11,12 +11,12 @@
 
 #include "hardware/uart.h"
 
-static uart_inst *hal_to_rp2040_inst(hal::peripherals::UARTInstance instance) {
+static uart_inst *hal_to_rp2040_inst(eml::hal::peripherals::UARTInstance instance) {
 
-    return instance == hal::peripherals::UART_INSTANCE0 ? uart0 : uart1;
+    return instance == eml::hal::peripherals::UART_INSTANCE0 ? uart0 : uart1;
 }
 
-namespace hal::peripherals::uart {
+namespace eml::hal::peripherals::uart {
 
     class UART : public interfaces::InterfaceUART, public traits::NonMovable<UART>{
     public:
@@ -183,6 +183,6 @@ namespace hal::peripherals::uart {
 
     };
 
-} // namespace hal::peripherals::uart
+} // namespace eml::hal::peripherals::uart
 
 #endif //EMBEDDEDLIBRARY_UART_RP2040_H

@@ -9,12 +9,12 @@
 
 #include <hardware/spi.h>
 
-static spi_inst *hal_to_rp2040_inst(hal::peripherals::SPIInstance instance) {
+static spi_inst *hal_to_rp2040_inst(eml::hal::peripherals::SPIInstance instance) {
 
-    return instance == hal::peripherals::SPI_INSTANCE0 ? spi0 : spi1;
+    return instance == eml::hal::peripherals::SPI_INSTANCE0 ? spi0 : spi1;
 }
 
-namespace hal::peripherals::spi {
+namespace eml::hal::peripherals::spi {
 
 class SPI : public interfaces::InterfaceSPI {
     public:
@@ -196,6 +196,6 @@ class SPI : public interfaces::InterfaceSPI {
 
     private:
     };
-} // namespace hal::peripherals::spi
+} // namespace eml::hal::peripherals::spi
 
 #endif //EMBEDDEDLIBRARY_SPI_RP2040_H

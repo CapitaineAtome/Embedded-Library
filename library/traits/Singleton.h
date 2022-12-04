@@ -8,7 +8,7 @@
 #include "NonCopyable.h"
 #include "NonMovable.h"
 
-namespace hal::traits {
+namespace eml::traits {
 
     class Singleton : public NonCopyable<Singleton>, public NonMovable<Singleton> {
     public:
@@ -31,6 +31,6 @@ namespace hal::traits {
 
     };
 
-} // hal::traits
+} // eml::traits
 
 #endif //EMBEDDEDLIBRARY_SINGLETON_H

@@ -7,7 +7,7 @@
 
 #include "hardware/pwm.h"
 
-namespace hal::peripherals::pwm {
+namespace eml::hal::peripherals::pwm {
 
     class PWM : interfaces::InterfacePWM {
     public:
@@ -186,6 +186,6 @@ namespace hal::peripherals::pwm {
 
     private:
     };
-} // namespace hal::peripherals::pwm
+} // namespace eml::hal::peripherals::pwm
 
 #endif //EMBEDDEDLIBRARY_PWM_RP2040_H

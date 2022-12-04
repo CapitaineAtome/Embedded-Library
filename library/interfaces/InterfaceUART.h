@@ -10,7 +10,7 @@
 #include "../traits/Singleton.h"
 #include "InterfaceDigitalGPIO.h"
 
-namespace hal::interfaces {
+namespace eml::hal::interfaces {
 
     class InterfaceUART : public traits::Singleton {
     public:
@@ -23,7 +23,7 @@ namespace hal::interfaces {
         // ****************************************************************
 
         /**
-         * The destructor must call @ref hal::interfaces::InterfaceUART::deinit() "deinit()" in the concrete class
+         * The destructor must call @ref eml::hal::interfaces::InterfaceUART::deinit() "deinit()" in the concrete class
          */
         ~InterfaceUART() override =default;
 
@@ -200,6 +200,6 @@ namespace hal::interfaces {
 
     };
 
-} // hal::// interface
+} // eml::hal::// interface
 
 #endif //EMBEDDEDLIBRARY_INTERFACEUART_H

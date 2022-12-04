@@ -10,7 +10,7 @@
 #include "../traits/Singleton.h"
 #include "../commons/commons.h"
 
-namespace hal::interfaces {
+namespace eml::hal::interfaces {
 
     class InterfaceSPI : public traits::Singleton {
     public:
@@ -22,7 +22,7 @@ namespace hal::interfaces {
         //                    Constructors and Destructor
         // ****************************************************************
 /**
-         * The destructor must call @ref hal::interfaces::InterfaceSPI::deinit() "deinit()" in the concrete class
+         * The destructor must call @ref eml::hal::interfaces::InterfaceSPI::deinit() "deinit()" in the concrete class
          */
         ~InterfaceSPI() override = default;
 
@@ -120,6 +120,6 @@ namespace hal::interfaces {
 
     private:
     };
-} // namespace hal::interfaces
+} // namespace eml::hal::interfaces
 
 #endif //EMBEDDEDLIBRARY_INTERFACESPI_H

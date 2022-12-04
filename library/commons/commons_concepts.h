@@ -11,7 +11,7 @@
 
 #include <concepts>
 
-namespace hal::concepts {
+namespace eml::concepts {
     /**
 	 *	Concept that check if the type T is serializable.
 	 *

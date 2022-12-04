@@ -9,12 +9,12 @@
 
 #include <hardware/i2c.h>
 
-static i2c_inst *hal_to_rp2040_inst(hal::peripherals::I2CInstance instance) {
+static i2c_inst *hal_to_rp2040_inst(eml::hal::peripherals::I2CInstance instance) {
 
-    return instance == hal::peripherals::I2C_INSTANCE0 ? i2c0 : i2c1;
+    return instance == eml::hal::peripherals::I2C_INSTANCE0 ? i2c0 : i2c1;
 }
 
-namespace hal::peripherals::i2c {
+namespace eml::hal::peripherals::i2c {
 
     class I2C : public interfaces::InterfaceI2C {
     public:
@@ -92,10 +92,10 @@ namespace hal::peripherals::i2c {
             if(tmp_ < 0) {
 
                 if(tmp_ == PICO_ERROR_TIMEOUT) {
-                    hal::error = Error::TIMEOUT;
+                    eml::hal::error = Error::TIMEOUT;
                 }
                 else {
-                    hal::error = Error::READ;
+                    eml::hal::error = Error::READ;
                 }
 
                 return 0;
@@ -111,10 +111,10 @@ namespace hal::peripherals::i2c {
             if(tmp_ < 0) {
 
                 if(tmp_ == PICO_ERROR_TIMEOUT) {
-                    hal::error = Error::TIMEOUT;
+                    eml::hal::error = Error::TIMEOUT;
                 }
                 else {
-                    hal::error = Error::WRITE;
+                    eml::hal::error = Error::WRITE;
                 }
 
                 tmp_ = 0;
@@ -181,6 +181,6 @@ namespace hal::peripherals::i2c {
     private:
     };
 
-} // hal::peripherals::i2c
+} // eml::hal::peripherals::i2c
 
 #endif //EMBEDDEDLIBRARY_I2C_RP2040_H

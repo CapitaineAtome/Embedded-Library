@@ -10,7 +10,7 @@
 
 #include "hardware/gpio.h"
 
-namespace hal {
+namespace eml::hal {
 
     namespace peripherals {
 
@@ -121,6 +121,6 @@ namespace hal {
         sleep_ms(ms);
     }
 
-} // namespace hal
+} // namespace eml::hal
 
 #endif //EMBEDDEDLIBRARY_COMMONS_RP2040_H

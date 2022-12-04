@@ -10,7 +10,7 @@
 #include "../traits/Singleton.h"
 #include "../commons/commons.h"
 
-namespace hal::interfaces {
+namespace eml::hal::interfaces {
 
     class InterfaceI2C : public traits::Singleton {
     public:
@@ -22,7 +22,7 @@ namespace hal::interfaces {
         //                    Constructors and Destructor
         // ****************************************************************
 /**
-         * The destructor must call @ref hal::interfaces::InterfaceI2C::deinit() "deinit()" in the concrete class
+         * The destructor must call @ref eml::hal::interfaces::InterfaceI2C::deinit() "deinit()" in the concrete class
          */
         ~InterfaceI2C() override =default;
 
@@ -254,6 +254,6 @@ namespace hal::interfaces {
     private:
     };
 
-} // hal::interface
+} // eml::hal::interface
 
 #endif //EMBEDDEDLIBRARY_INTERFACEI2C_H

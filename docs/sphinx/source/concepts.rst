@@ -2,7 +2,7 @@
 Concepts
 ========
 
-.. doxygenconcept:: hal::concepts::is_serializable
+.. doxygenconcept:: eml::concepts::is_serializable
 
-.. doxygenconcept:: hal::concepts::is_bitwiseable
+.. doxygenconcept:: eml::concepts::is_bitwiseable
 

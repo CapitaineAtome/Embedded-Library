@@ -33,7 +33,7 @@
 #ifndef EMBEDDEDLIBRARY_NONMOVABLE_H
 #define EMBEDDEDLIBRARY_NONMOVABLE_H
 
-namespace hal::traits {
+namespace eml::traits {
 
     template<typename T>
     class NonMovable {
@@ -67,5 +67,5 @@ namespace hal::traits {
          */
         NonMovable &operator=(NonMovable &&)=delete;
     };
-} // hal::traits
+} // eml::traits
 #endif //EMBEDDEDLIBRARY_NONMOVABLE_H

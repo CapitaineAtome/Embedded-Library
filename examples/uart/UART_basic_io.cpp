@@ -6,6 +6,8 @@
 #include "peripherals/DigitalInOut.h"
 #include <cstring> // for strlen
 
+using namespace eml;
+
 int main() {
 
     const char *message{"Hello, World!"};
@@ -21,11 +23,11 @@ int main() {
 
         if(uart.isReadable()) {
 
-            uart_read_blocking(uart0, msg, hal::sizeof_array(msg));
+            uart_read_blocking(uart0, msg, eml::sizeof_array(msg));
 
         }
 
-        if(uart.isWritable()){
+        if(uart.isWritable()) {
 
             uart.write(reinterpret_cast<const uint8_t *const>(message), strlen(message));
         }

@@ -12,7 +12,7 @@
 #include "../commons/commons.h"
 #include "../traits/NonCopyable.h"
 
-namespace hal::interfaces {
+namespace eml::hal::interfaces {
 
     class InterfaceDigitalGPIO : traits::NonCopyable<InterfaceDigitalGPIO> {
     public:
@@ -191,7 +191,7 @@ namespace hal::interfaces {
          *
          * @return whether this instance has been inited
          */
-        virtual bool inited() const;
+        virtual bool inited() const=0;
 
         /**
          * Read into the GPIO.
@@ -304,6 +304,6 @@ namespace hal::interfaces {
     private:
     };
 
-} // hal::interface
+} // eml::hal::interface
 
 #endif //EMBEDDEDLIBRARY_INTERFACEDIGITALGPIO_H

@@ -10,7 +10,7 @@
 #include "../traits/Singleton.h"
 #include "InterfaceDigitalGPIO.h"
 
-namespace hal::interfaces {
+namespace eml::hal::interfaces {
 
     class InterfacePWM : public traits::Singleton {
     public:
@@ -23,7 +23,7 @@ namespace hal::interfaces {
         // ****************************************************************
 
         /**
-         * The destructor must call @ref hal::interfaces::InterfacePWM::deinit() "deinit()" in the concrete class
+         * The destructor must call @ref eml::hal::interfaces::InterfacePWM::deinit() "deinit()" in the concrete class
          */
         ~InterfacePWM() override =default;
 
@@ -85,5 +85,5 @@ namespace hal::interfaces {
     private:
     };
 
-} // namespace hal::interfaces
+} // namespace eml::hal::interfaces
 #endif //EMBEDDEDLIBRARY_INTERFACEPWM_H

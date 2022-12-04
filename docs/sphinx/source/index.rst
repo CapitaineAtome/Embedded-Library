@@ -15,6 +15,7 @@ Welcome to Embedded-Library's documentation!
    commons
    concepts
    interfaces
+   examples
 
 
 

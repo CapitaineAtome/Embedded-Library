@@ -32,7 +32,7 @@
 #ifndef EMBEDDEDLIBRARY_NONCOPYABLE_H
 #define EMBEDDEDLIBRARY_NONCOPYABLE_H
 
-namespace hal::traits {
+namespace eml::traits {
 
     template<typename T>
     class NonCopyable {
@@ -71,6 +71,6 @@ namespace hal::traits {
     private:
     };
 
-} // hal::traits
+} // eml::traits
 
 #endif //EMBEDDEDLIBRARY_NONCOPYABLE_H

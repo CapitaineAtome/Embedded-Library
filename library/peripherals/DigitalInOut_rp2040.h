@@ -10,16 +10,16 @@
 
 #include <hardware/gpio.h>
 
-namespace hal::peripherals::gpio {
+namespace eml::hal::peripherals::gpio {
 
-    class DigitalInOut : public hal::interfaces::InterfaceDigitalGPIO {
+    class DigitalInOut : public eml::hal::interfaces::InterfaceDigitalGPIO {
     public:
 
         //****************************************************************
         //                   Constructors and Destructor
         //****************************************************************
 
-        DigitalInOut(pin_t gpio_pin, const Direction direction) : hal::interfaces::InterfaceDigitalGPIO(gpio_pin, direction) {
+        DigitalInOut(pin_t gpio_pin, const Direction direction) : eml::hal::interfaces::InterfaceDigitalGPIO(gpio_pin, direction) {
 
             // Do not call a virtual member function in constructor or destructor unless it is implemented in the class
         }
@@ -82,7 +82,7 @@ namespace hal::peripherals::gpio {
             m_gpio_func = Function::NONE;
         }
 
-        virtual bool inited() const override {
+        bool inited() const override {
 
             return m_gpio_func != gpio::Function::NONE;
         }
@@ -138,7 +138,7 @@ namespace hal::peripherals::gpio {
                     break;
 
                 default:
-                    hal::error = Error::NOTAVAILABLEONPLATFORM;
+                    eml::hal::error = Error::NOTAVAILABLEONPLATFORM;
                     return true;
                     break;
             }
@@ -154,6 +154,6 @@ namespace hal::peripherals::gpio {
 
     };
 
-} // hal::peripherals
+} // eml::hal::peripherals
 
 #endif //EMBEDDEDLIBRARY_DIGITALOUTPUT_RP2040_H

@@ -125,7 +125,7 @@ add_executable(Dummy_Executable
         peripherals/I2C_rp2040.h
         peripherals/SPI.h
         peripherals/SPI_rp2040.h
-        interfaces/InterfacePWM.h peripherals/PWM.h peripherals/PWM_rp2040.h ../examples/gpio/blinky.cpp)
+        interfaces/InterfacePWM.h peripherals/PWM.h peripherals/PWM_rp2040.h ../examples/gpio/blinky.cpp etl/TypeSerializer.h)
 
 target_include_directories(Dummy_Executable PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
