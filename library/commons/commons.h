@@ -172,7 +172,7 @@ namespace hal {
     //                         Global Variables
     // ****************************************************************
 
-    std::atomic<Error> errno;
+    std::atomic<Error> error;
 
     // ****************************************************************
     //                             Functions

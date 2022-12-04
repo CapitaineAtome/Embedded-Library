@@ -6,6 +6,7 @@
 #define EMBEDDEDLIBRARY_SINGLETON_H
 
 #include "NonCopyable.h"
+#include "NonMovable.h"
 
 namespace hal::traits {
 

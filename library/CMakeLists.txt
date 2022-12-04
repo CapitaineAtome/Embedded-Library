@@ -96,7 +96,6 @@ add_library(${IMPLEMENTATION_RP2040}
 target_include_directories(${IMPLEMENTATION_RP2040} PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
 target_link_libraries(${IMPLEMENTATION_RP2040}
-        pico_cyw43_arch_lwip_threadsafe_background
         pico_stdlib
         hardware_gpio
         hardware_uart
@@ -104,7 +103,7 @@ target_link_libraries(${IMPLEMENTATION_RP2040}
         hardware_spi
         hardware_pwm
         hardware_watchdog
-        pico_cyw43_arch_none)
+        )
 # pico_cyw43_arch_lwip_threadsafe_background
 
 # pico_add_extra_outputs(${IMPLEMENTATION_RP2040})
@@ -126,12 +125,11 @@ add_executable(Dummy_Executable
         peripherals/I2C_rp2040.h
         peripherals/SPI.h
         peripherals/SPI_rp2040.h
-        interfaces/InterfacePWM.h peripherals/PWM.h peripherals/PWM_rp2040.h)
+        interfaces/InterfacePWM.h peripherals/PWM.h peripherals/PWM_rp2040.h ../examples/gpio/blinky.cpp)
 
 target_include_directories(Dummy_Executable PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
 target_link_libraries(Dummy_Executable
-        pico_cyw43_arch_lwip_threadsafe_background
         pico_stdlib
         hardware_gpio
         hardware_uart
@@ -143,4 +141,4 @@ target_link_libraries(Dummy_Executable
 pico_add_extra_outputs(Dummy_Executable)
 
 pico_enable_stdio_uart(Dummy_Executable 1)
-pico_enable_stdio_uart(Dummy_Executable 0)
+pico_enable_stdio_usb(Dummy_Executable 0)

@@ -19,12 +19,9 @@ namespace hal::peripherals::gpio {
         //                   Constructors and Destructor
         //****************************************************************
 
-        explicit DigitalInOut(uint gpio_pin) : hal::interfaces::InterfaceDigitalGPIO(gpio_pin, Direction::OUT) {
-
-            m_gpio_func = gpio::Function::GPIO;
+        DigitalInOut(pin_t gpio_pin, const Direction direction) : hal::interfaces::InterfaceDigitalGPIO(gpio_pin, direction) {
 
             // Do not call a virtual member function in constructor or destructor unless it is implemented in the class
-            init();
         }
 
         DigitalInOut(DigitalInOut &&other) noexcept {
@@ -55,7 +52,9 @@ namespace hal::peripherals::gpio {
 
             if(this != &other) {
 
-                m_gpio_pin.pin = other.m_gpio_pin.pin;
+                memcpy(&m_gpio_pin, &other.m_gpio_pin, sizeof(m_gpio_pin));
+                memset(&other.m_gpio_pin, 0, sizeof(other.m_gpio_pin));
+
                 m_gpio_dir = other.m_gpio_dir;
                 m_gpio_pull = other.m_gpio_pull;
                 m_gpio_func = other.m_gpio_func;
@@ -71,15 +70,21 @@ namespace hal::peripherals::gpio {
 
         void init() override {
 
-            if( !inited() ) {
-                gpio_init(m_gpio_pin.pin);
-            }
+            m_gpio_func = gpio::Function::GPIO;
+
+            gpio_init(m_gpio_pin.pin);
+            gpio_set_dir(m_gpio_pin.pin, m_gpio_dir == Direction::OUT);
         }
 
         void deinit() override {
 
             gpio_deinit(m_gpio_pin.pin);
             m_gpio_func = Function::NONE;
+        }
+
+        virtual bool inited() const override {
+
+            return m_gpio_func != gpio::Function::NONE;
         }
 
         uint8_t read() override {
@@ -133,7 +138,7 @@ namespace hal::peripherals::gpio {
                     break;
 
                 default:
-                    hal::errno = Error::NOTAVAILABLEONPLATFORM;
+                    hal::error = Error::NOTAVAILABLEONPLATFORM;
                     return true;
                     break;
             }

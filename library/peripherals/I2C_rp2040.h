@@ -85,69 +85,42 @@ namespace hal::peripherals::i2c {
             return false;
         }
 
-        std::size_t read(const uint8_t addr, uint8_t *cmd, const size_t length, const bool nostop) override {
+        std::size_t read(const uint8_t addr, uint8_t *buffer, const size_t length, const bool nostop) override {
 
-            auto tmp = i2c_read_blocking(hal_to_rp2040_inst(m_instance), addr, cmd, length, nostop);
+            auto tmp_ = i2c_read_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
 
-            if(tmp < 0) {
+            if(tmp_ < 0) {
 
-                hal::errno = Error::WRITE;
-                return 0;
-
-            } else {
-
-                return static_cast<size_t>(tmp);
-            }
-        }
-
-        std::size_t readfrom(const uint8_t addr, const uint8_t reg, uint8_t *buffer, const size_t length, bool nostop) {
-
-            selectRegister(addr, reg);
-            auto temp_ = i2c_read_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
-
-            if(temp_ < 0) {
-
-                if(temp_ == PICO_ERROR_TIMEOUT) {
-                    hal::errno = Error::TIMEOUT;
+                if(tmp_ == PICO_ERROR_TIMEOUT) {
+                    hal::error = Error::TIMEOUT;
                 }
                 else {
-                    hal::errno = Error::READ;
+                    hal::error = Error::READ;
                 }
+
+                return 0;
             }
 
-            return temp_;
+            return static_cast<size_t>(tmp_);
         }
 
-        std::size_t writeto(const uint8_t addr, const uint8_t reg, const uint8_t * const buffer, const size_t length, bool nostop) {
+        std::size_t write(const uint8_t addr, const uint8_t * const buffer, const size_t length, const bool nostop) override {
 
-            selectRegister(addr, reg);
-            auto temp_ = i2c_write_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
+            auto tmp_ = i2c_write_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
 
-            if(temp_ < 0) {
+            if(tmp_ < 0) {
 
-                if(temp_ == PICO_ERROR_TIMEOUT) {
-                    hal::errno = Error::TIMEOUT;
+                if(tmp_ == PICO_ERROR_TIMEOUT) {
+                    hal::error = Error::TIMEOUT;
                 }
                 else {
-                    hal::errno = Error::READ;
+                    hal::error = Error::WRITE;
                 }
+
+                tmp_ = 0;
             }
 
-            return temp_;
-        }
-
-        std::size_t write(const uint8_t addr, const uint8_t * const cmd, const size_t length, const bool nostop) override {
-
-            auto tmp = i2c_write_blocking(hal_to_rp2040_inst(m_instance), addr, cmd, length, nostop);
-
-            if(tmp < 0) {
-
-                hal::errno = Error::READ;
-                return 0;
-
-            }
-
-            return static_cast<size_t>(tmp);
+            return static_cast<size_t>(tmp_);
         }
 
         bool setPins(const pin_t &sda_pin, const pin_t &scl_pin) override {
@@ -169,12 +142,12 @@ namespace hal::peripherals::i2c {
             return (m_frequency = i2c_set_baudrate(hal_to_rp2040_inst(m_instance), frequency));
         }
 
-        [[nodiscard]] uint getBaudrate() const override {
+        uint getFrequency() const override {
 
             return m_frequency;
         }
 
-        [[nodiscard]] bool isInitialised() const override {
+        bool isInitialised() const override {
 
             return m_inited;
         }

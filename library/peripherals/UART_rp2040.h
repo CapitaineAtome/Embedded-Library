@@ -88,7 +88,7 @@ namespace hal::peripherals::uart {
 
             for(size_t i{0}; i < length; i++) {
 
-                buffer[i] = uart_getc(hal_to_rp2040_inst(m_instance));
+                uart_read_blocking(hal_to_rp2040_inst(m_instance), buffer, length);
             }
         }
 
@@ -105,7 +105,7 @@ namespace hal::peripherals::uart {
             }
         }
 
-        bool setPins(const pin_t rx_pin, const pin_t tx_pin) override {
+        bool setPins(const pin_t &rx_pin, const pin_t &tx_pin) override {
 
             m_rx_pin = rx_pin;
             m_tx_pin = tx_pin;
@@ -126,22 +126,36 @@ namespace hal::peripherals::uart {
             return m_baudrate = isInitialised() ? uart_set_baudrate(hal_to_rp2040_inst(m_instance), baudrate) : m_baudrate;
         }
 
-        [[nodiscard]] uint getBaudrate() const override {
+        uint getBaudrate() const override {
 
             return m_baudrate;
         }
 
-        [[nodiscard]] bool isInitialised() const override {
+        bool isInitialised() const override {
 
             return uart_is_enabled(hal_to_rp2040_inst(m_instance));
         }
 
-        [[nodiscard]] bool isReadable() const override {
+        /**
+         *  Determine how many data is waiting in the RX FIFO.
+         *
+         *  @warning This implementation only returns a boolean
+         *
+         * @return 0 if nothing waiting otherwise number of bytes waiting
+         */
+        size_t isReadable() const override {
 
             return uart_is_readable(hal_to_rp2040_inst(m_instance));
         }
 
-        [[nodiscard]] bool isWritable() const override {
+        /**
+         * Determine how many space is available in the TX FIFO.
+         *
+         * @note This implementation only returns a boolean
+         *
+         * @return 0 if no space available otherwise number of bytes that can be sent
+         */
+        size_t isWritable() const override {
 
             return uart_is_writable(hal_to_rp2040_inst(m_instance));
         }

@@ -73,7 +73,7 @@ namespace hal::interfaces {
          * @param buffer array of data to read
          * @param length length of the array
          */
-        virtual void read(uint8_t *buffer, const size_t length)=0;
+        virtual void read(uint8_t * const buffer, const size_t length)=0;
 
         /**
          * Send a byte through the UART
@@ -97,7 +97,7 @@ namespace hal::interfaces {
          * @param tx_pin tx pin
          * @return whether an error occurred
          */
-        virtual bool setPins(const pin_t rx_pin, const pin_t tx_pin)=0;
+        virtual bool setPins(const pin_t &rx_pin, const pin_t &tx_pin)=0;
 
         /**
          * Set the RX and TX pins of the UART.
@@ -138,28 +138,28 @@ namespace hal::interfaces {
          * Get the baud rate value
          * @return value of the baud rate
          */
-        [[nodiscard]] virtual uint getBaudrate() const=0;
+        virtual uint getBaudrate() const=0;
 
         /**
          * Determine if the UART has been initialised
          *
          * @return true if it has been reinitialised, false otherwise
          */
-        [[nodiscard]] virtual bool isInitialised()const=0;
+        virtual bool isInitialised()const=0;
 
         /**
-         *  Determine whether data is waiting in the RX FIFO.
+         *  Determine how many data is waiting in the RX FIFO.
          *
-         * @return true if data available, 0 otherwise
+         * @return 0 if nothing waiting otherwise number of bytes waiting
          */
-        [[nodiscard]] virtual bool isReadable()const=0;
+        virtual size_t isReadable()const=0;
 
         /**
-         * Determine if space is available in the TX FIFO.
+         * Determine how many space is available in the TX FIFO.
          *
-         * @return true if there is space, false otherwise
+         * @return 0 if no space available otherwise number of bytes that can be sent
          */
-        [[nodiscard]] virtual bool isWritable()const=0;
+        virtual size_t isWritable()const=0;
 
         /**
          * Set UART data format.

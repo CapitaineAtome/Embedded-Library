@@ -46,15 +46,35 @@ namespace hal::interfaces {
         //                             Functions
         // ****************************************************************
 
+        /**
+         *
+         * @param sck_pin
+         * @param mosi_pin
+         * @param miso_pin
+         * @param frequency
+         * @return
+         */
         virtual bool init(const pin_t &sck_pin,
                           const pin_t &mosi_pin,
                           const pin_t &miso_pin,
                           const uint frequency)=0;
 
+        /**
+         *
+         * @return
+         */
         virtual bool deinit()=0;
 
-        [[nodiscard]] virtual bool isInitialised() const =0;
+        /**
+         *
+         * @return
+         */
+        virtual bool isInitialised() const =0;
 
+        /**
+         *
+         * @param pin
+         */
         virtual void select(const uint pin) const =0;
 
         virtual void deselect(const uint pin) const =0;
@@ -68,9 +88,9 @@ namespace hal::interfaces {
 
         virtual peripherals::Mode getMode() const =0;
 
-        [[nodiscard]] virtual bool isWritable() const=0;
-        [[nodiscard]] virtual bool isReadable() const=0;
-        [[nodiscard]] virtual bool isBusy() const=0;
+        virtual bool isWritable() const=0;
+        virtual bool isReadable() const=0;
+        virtual bool isBusy() const=0;
 
         virtual int read(uint8_t * const buffer, const size_t len)=0;
         virtual int read(uint16_t * const buffer, const size_t len)=0;

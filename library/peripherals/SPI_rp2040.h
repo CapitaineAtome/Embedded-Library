@@ -97,7 +97,7 @@ class SPI : public interfaces::InterfaceSPI {
             return false;
         }
 
-        [[nodiscard]] bool isInitialised() const override {
+        bool isInitialised() const override {
 
             return m_inited;
         }
@@ -139,15 +139,15 @@ class SPI : public interfaces::InterfaceSPI {
             return m_mode;
         }
 
-        [[nodiscard]] bool isWritable() const override {
+        bool isWritable() const override {
 
             return spi_is_writable(hal_to_rp2040_inst(m_instance));
         }
-        [[nodiscard]] bool isReadable() const override {
+        bool isReadable() const override {
 
             return spi_is_readable(hal_to_rp2040_inst(m_instance));
         }
-        [[nodiscard]] bool isBusy() const override {
+        bool isBusy() const override {
 
             return spi_is_busy(hal_to_rp2040_inst(m_instance));
         }

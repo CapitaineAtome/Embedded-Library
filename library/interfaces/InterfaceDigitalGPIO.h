@@ -40,7 +40,7 @@ namespace hal::interfaces {
          * @param gpio_pin GPIO number
          * @param dir direction of the pin
          */
-        InterfaceDigitalGPIO(const uint gpio_pin, const enum peripherals::gpio::Direction dir) :
+        InterfaceDigitalGPIO(const pin_t &gpio_pin, const enum peripherals::gpio::Direction dir) :
                 m_gpio_pin{gpio_pin},
                 m_gpio_dir{dir},
                 m_gpio_pull{peripherals::gpio::Pull::NONE},
@@ -57,7 +57,7 @@ namespace hal::interfaces {
          * @param dir direction of the pin
          * @param pull pulling mode of the pin
          */
-        InterfaceDigitalGPIO(const uint gpio_pin, const enum peripherals::gpio::Direction dir, const enum peripherals::gpio::Pull pull) :
+        InterfaceDigitalGPIO(const pin_t &gpio_pin, const enum peripherals::gpio::Direction dir, const enum peripherals::gpio::Pull pull) :
                 m_gpio_pin{gpio_pin},
                 m_gpio_dir{dir},
                 m_gpio_pull{pull},
@@ -75,7 +75,7 @@ namespace hal::interfaces {
          * @param pull pulling mode of the pin
          * @param func function of the pin
          */
-        InterfaceDigitalGPIO(const uint gpio_pin, const enum peripherals::gpio::Direction dir, const enum peripherals::gpio::Pull pull, const enum peripherals::gpio::Function func) :
+        InterfaceDigitalGPIO(const pin_t &gpio_pin, const enum peripherals::gpio::Direction dir, const enum peripherals::gpio::Pull pull, const enum peripherals::gpio::Function func) :
                 m_gpio_pin{gpio_pin},
                 m_gpio_dir{dir},
                 m_gpio_pull{pull},
@@ -187,13 +187,11 @@ namespace hal::interfaces {
         virtual void deinit()=0;
 
         /**
+         * Check if the GPIO has been initialised.
          *
          * @return whether this instance has been inited
          */
-        virtual bool inited() const {
-
-            return m_gpio_func != peripherals::gpio::Function::NONE;
-        }
+        virtual bool inited() const;
 
         /**
          * Read into the GPIO.

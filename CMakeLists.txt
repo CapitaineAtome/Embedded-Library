@@ -14,3 +14,4 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAS_DEBUG} -O0 -fno-rtti")
 
 add_subdirectory(library)
+add_subdirectory(examples)

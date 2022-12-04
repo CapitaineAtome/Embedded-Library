@@ -14,18 +14,27 @@ namespace hal {
 
     namespace peripherals {
 
+        /**
+         * Number of instance for the UART peripheral on a RP2040.
+         */
         enum UARTInstance : uint8_t {
 
             UART_INSTANCE0,
             UART_INSTANCE1
         };
 
+        /**
+         * Number of instance for the SPI peripheral on a RP2040.
+         */
         enum SPIInstance : uint8_t {
 
             SPI_INSTANCE0,
             SPI_INSTANCE1
         };
 
+        /**
+         * Number of instance for the I2C peripheral on a RP2040.
+         */
         enum I2CInstance : uint8_t {
 
             I2C_INSTANCE0,
@@ -34,6 +43,9 @@ namespace hal {
 
     } // namespace peripherals
 
+    /**
+     * Enumerate all the pin number available on a RP2040.
+     */
     enum PIN : uint {
 
         GPIO0 = 0,
@@ -72,16 +84,29 @@ namespace hal {
         NUMBER_GPIO_PIN,
     };
 
+    /**
+     * Structure that define how a pin is represented.
+     * On the RP2040, only the pin number is needed.
+     *
+     * @note the value shouldn't be superior than 29. This is the pin highest number on a RP2040.
+     */
     typedef struct {
 
+        ///< The pin number
         uint pin;
 
     } pin_t;
 
 
-    pin_t pin(const uint number) {
+    /**
+     * Create and returns a pin_t struct using the argument provided.
+     *
+     * @param pin pin number
+     * @return a pin_t structure to be used
+     */
+    pin_t pin(const uint pin) {
 
-        pin_t pin_{.pin = number};
+        pin_t pin_{.pin = pin};
 
         return pin_;
     }
