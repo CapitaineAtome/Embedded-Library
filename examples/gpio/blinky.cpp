@@ -8,21 +8,18 @@
 #define LED_PIN PICO_DEFAULT_LED_PIN // Default LED on the raspberry pi pico ( not the pico w )
 #else
 // To define for other platform
-#define LED_PIN 1
+#error No default LED on this platform
 #endif
 
 int main() {
 
     // Instantiate the LED at the pin LED_PIN as an output.
-    auto led{eml::hal::peripherals::gpio::DigitalInOut(eml::hal::pin(LED_PIN),
+    auto led{eml::hal::peripherals::gpio::DigitalInOut(eml::hal::pin(eml::hal::PIN{LED_PIN}),
                                                   eml::hal::peripherals::gpio::Direction::OUT)};
-
-    // Initialise the LED
-    led.init();
 
     while(true) {
 
-        // Toggle the light
+        // Toggle the LED
         led.toggle();
 
         // Every few milliseconds
