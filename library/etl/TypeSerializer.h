@@ -31,23 +31,21 @@ namespace eml::etl {
 
         TypeSerializer() : m_value{} {}
         TypeSerializer(const TypeSerializer &other) : m_value{other.m_value} {}
-        TypeSerializer(TypeSerializer &&other) noexcept : m_value{other.m_value} { other.m_value.v64 = 0;}
+        TypeSerializer(TypeSerializer &&other) noexcept : TypeSerializer() { swap(*this, other); }
 
         ~TypeSerializer()=default;
 
-        TypeSerializer &operator=(const TypeSerializer &other) {
-            if(this != &other) {
-                m_value = other.m_value;
-            }
+        TypeSerializer &operator=(TypeSerializer other) {
+
+            swap(*this, other);
+
             return *this;
         }
 
         TypeSerializer &operator=(TypeSerializer &&other) noexcept {
-            if(this != &other) {
-                m_value = other.m_value;
 
-                other.m_value.v64 = 0;
-            }
+            swap(*this, other);
+
             return *this;
         }
 
@@ -87,8 +85,7 @@ namespace eml::etl {
          */
         TypeSerializer &operator<<(const uint8_t value) {
 
-            m_value.v64 = 0;
-            m_value.v8 = value;
+            m_value.v64 = 0 | value;
             return *this;
         }
 
@@ -100,8 +97,7 @@ namespace eml::etl {
          */
         TypeSerializer &operator<<(const uint16_t value) {
 
-            m_value.v64 = 0;
-            m_value.v16 = value;
+            m_value.v64 = 0 | value;
             return *this;
         }
 
@@ -113,8 +109,7 @@ namespace eml::etl {
          */
         TypeSerializer &operator<<(const uint32_t value) {
 
-            m_value.v64 = 0;
-            m_value.v32 = value;
+            m_value.v64 = 0 | value;
             return *this;
         }
 
@@ -126,7 +121,6 @@ namespace eml::etl {
          */
         TypeSerializer &operator<<(const uint64_t value) {
 
-            m_value.v64 = 0;
             m_value.v64 = value;
             return *this;
         }
@@ -247,13 +241,13 @@ namespace eml::etl {
         std::size_t unpack(uint8_t * const buffer, const size_t sz) const {
 
             memset(buffer, 0, sz);
-            memcpy(buffer, &m_value, eml::min(sizeof(m_value), sz));
+            memcpy(buffer, &m_value, std::min(sizeof(m_value), sz));
 
-            return eml::min(sizeof(m_value), sz);
+            return std::min(sizeof(m_value), sz);
         }
 
         /**
-         * Pack a value from buffer and return size packed.
+         * Pack a value from buffer and return the size packed.
          *
          * @param buffer value to pack
          * @param sz size of the value
@@ -262,16 +256,23 @@ namespace eml::etl {
         std::size_t pack(const uint8_t * const buffer, const std::size_t sz) {
 
             clear();
-            memcpy(&m_value, buffer, eml::min(sizeof(m_value), sz));
+            memcpy(&m_value, buffer, std::min(sizeof(m_value), sz));
 
-            return eml::min(sizeof(m_value), sz);
+            return std::min(sizeof(m_value), sz);
+        }
+
+        friend void swap(TypeSerializer &first, TypeSerializer &second) {
+
+            using std::swap;
+
+            swap(first.m_value, second.m_value);
         }
 
     protected:
         /**
          * Union that hold the values that can be packed.
          */
-        typedef union {
+        typedef union [[nodiscard]]  {
             uint8_t v8;
             uint16_t v16;
             uint32_t v32;
