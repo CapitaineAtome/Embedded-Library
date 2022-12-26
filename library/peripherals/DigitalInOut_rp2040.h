@@ -22,20 +22,13 @@ namespace eml::hal::peripherals::gpio {
         DigitalInOut(pin_t gpio_pin, const Direction direction) : eml::hal::interfaces::InterfaceDigitalGPIO(gpio_pin, direction) {
 
             // Do not call a virtual member function in constructor or destructor unless it is implemented in the class
+
+            (void) init();
         }
 
         DigitalInOut(DigitalInOut &&other) noexcept {
 
-            if(this != &other) {
-
-                memcpy(&m_gpio_pin, &other.m_gpio_pin, sizeof(m_gpio_pin));
-                memset(&other.m_gpio_pin, 0, sizeof(other.m_gpio_pin));
-
-                m_gpio_dir = other.m_gpio_dir;
-                m_gpio_pull = other.m_gpio_pull;
-                m_gpio_func = other.m_gpio_func;
-                m_gpio_irq = other.m_gpio_irq;
-            }
+            swap(*this, other);
         }
 
         ~DigitalInOut() override {
@@ -44,22 +37,17 @@ namespace eml::hal::peripherals::gpio {
             deinit();
         };
 
+        DigitalInOut(const DigitalInOut &)=delete;
+        
         //****************************************************************
         //                           Operators
         //****************************************************************
 
+        DigitalInOut &operator=(const DigitalInOut &)=delete;
+
         DigitalInOut &operator=(DigitalInOut &&other) noexcept {
 
-            if(this != &other) {
-
-                memcpy(&m_gpio_pin, &other.m_gpio_pin, sizeof(m_gpio_pin));
-                memset(&other.m_gpio_pin, 0, sizeof(other.m_gpio_pin));
-
-                m_gpio_dir = other.m_gpio_dir;
-                m_gpio_pull = other.m_gpio_pull;
-                m_gpio_func = other.m_gpio_func;
-                m_gpio_irq = other.m_gpio_irq;
-            }
+            swap(*this, other);
 
             return *this;
         }
@@ -68,12 +56,14 @@ namespace eml::hal::peripherals::gpio {
         //                             Functions
         // ****************************************************************
 
-        void init() override {
+        [[nodiscard]] bool init() override {
 
             m_gpio_func = gpio::Function::GPIO;
 
             gpio_init(m_gpio_pin.pin);
             gpio_set_dir(m_gpio_pin.pin, m_gpio_dir == Direction::OUT);
+
+            return false;
         }
 
         void deinit() override {
@@ -82,7 +72,7 @@ namespace eml::hal::peripherals::gpio {
             m_gpio_func = Function::NONE;
         }
 
-        bool inited() const override {
+        [[nodiscard]] bool inited() const override {
 
             return m_gpio_func != gpio::Function::NONE;
         }
@@ -138,7 +128,7 @@ namespace eml::hal::peripherals::gpio {
                     break;
 
                 default:
-                    eml::hal::error = Error::NOTAVAILABLEONPLATFORM;
+                    eml::hal::error.store(Error::NOTAVAILABLEONPLATFORM);
                     return true;
                     break;
             }

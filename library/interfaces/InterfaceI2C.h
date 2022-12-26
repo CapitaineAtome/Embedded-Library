@@ -46,7 +46,7 @@ namespace eml::hal::interfaces {
          * @param addr address to check on
          * @return true whether or not the address provided is a special I2C address
          */
-        static bool isSpecialAddress(uint8_t addr) noexcept {
+        [[nodiscard]] static bool isSpecialAddress(uint8_t addr) noexcept {
 
             // I2C reserves some addresses for special purposes.
             // These are any addresses of the form 000 0xxx or 111 1xxx
@@ -65,7 +65,7 @@ namespace eml::hal::interfaces {
          * @param baudrate baud rate in Hz
          * @return whether the initialisation had an error
          */
-        virtual bool init(const pin_t &sda_pin, const pin_t &scl_pin, const uint baudrate)=0;
+        [[nodiscard]] virtual bool init(const pin_t &sda_pin, const pin_t &scl_pin, const uint baudrate)=0;
 
         /**
          * De initialise the I2C instance.
@@ -146,7 +146,7 @@ namespace eml::hal::interfaces {
          * @param scl_pin clock pin
          * @return whether settings had an error
          */
-        virtual bool setPins(const pin_t &sda_pin, const pin_t &scl_pin)=0;
+        [[nodiscard]] virtual bool setPins(const pin_t &sda_pin, const pin_t &scl_pin)=0;
 
         /**
          * Set the data and clock pins arguments accordingly.
@@ -178,28 +178,31 @@ namespace eml::hal::interfaces {
          *
          * @return frequency in Hz
          */
-        virtual uint getFrequency() const=0;
+        [[nodiscard]] virtual uint getFrequency() const=0;
 
         /**
          * Returns whether or not the instance was initialised.
          *
          * @return true if initialised, false otherwise
          */
-        virtual bool isInitialised() const=0;
+        [[nodiscard]] bool isInitialised() const {
+
+            return m_inited;
+        }
 
         /**
          * Whether there is data to read on the instance.
          *
          * @return number of bytes to read
          */
-        virtual std::size_t isReadable()=0;
+        [[nodiscard]] virtual std::size_t isReadable()=0;
 
         /**
          * Whether we can write on the instance.
          *
          * @return number of bytes writable
          */
-        virtual std::size_t isWritable()=0;
+        [[nodiscard]] virtual std::size_t isWritable()=0;
 
         /**
          * Set the device mode.
@@ -236,13 +239,24 @@ namespace eml::hal::interfaces {
             }
         }
 
+        friend void swap(InterfaceI2C &first, InterfaceI2C &second) {
+
+            using std::swap;
+
+            swap(first.m_sda_pin, second.m_sda_pin);
+            swap(first.m_scl_pin, second.m_scl_pin);
+            swap(first.m_frequency, second.m_frequency);
+            swap(first.m_instance, second.m_instance);
+            swap(first.m_inited, second.m_inited);
+        }
+
     protected:
         // ****************************************************************
         //                    Constructors and Destructor
         // ****************************************************************
 
         InterfaceI2C()
-        : m_sda_pin{0}, m_scl_pin{0}, m_frequency{0}, m_instance{} {}
+        : m_sda_pin{}, m_scl_pin{}, m_frequency{}, m_instance{}, m_inited{} {}
 
         pin_t m_sda_pin{}; ///< Hold the sda pin
         pin_t m_scl_pin{}; ///< Hold the scl pin
@@ -250,6 +264,8 @@ namespace eml::hal::interfaces {
         uint m_frequency{}; ///< Hold the frequency at which the clock will run at
 
         peripherals::I2CInstance m_instance; ///< Hold the instance of the current I2C interface
+
+        bool m_inited;
 
     private:
     };

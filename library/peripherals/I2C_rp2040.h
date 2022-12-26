@@ -11,7 +11,7 @@
 
 static i2c_inst *hal_to_rp2040_inst(eml::hal::peripherals::I2CInstance instance) {
 
-    return instance == eml::hal::peripherals::I2C_INSTANCE0 ? i2c0 : i2c1;
+    return instance == eml::hal::peripherals::I2CInstance::I2C_INSTANCE0 ? i2c0 : i2c1;
 }
 
 namespace eml::hal::peripherals::i2c {
@@ -48,16 +48,16 @@ namespace eml::hal::peripherals::i2c {
         //                          Static Functions
         // ****************************************************************
 
-        static I2C &getInstance(const uint8_t instance) {
+        static I2C &getInstance(const I2CInstance instance) {
 
             switch(instance) {
                 default:
-                case I2C_INSTANCE0:
-                    static I2C s_i2c_instance0{static_cast<const I2CInstance>(instance)};
+                case I2CInstance::I2C_INSTANCE0:
+                    static I2C s_i2c_instance0{instance};
                     return s_i2c_instance0;
 
-                case I2C_INSTANCE1:
-                    static I2C s_i2c_instance1{static_cast<const I2CInstance>(instance)};
+                case I2CInstance::I2C_INSTANCE1:
+                    static I2C s_i2c_instance1{instance};
                     return s_i2c_instance1;
             }
         }
@@ -92,10 +92,10 @@ namespace eml::hal::peripherals::i2c {
             if(tmp_ < 0) {
 
                 if(tmp_ == PICO_ERROR_TIMEOUT) {
-                    eml::hal::error = Error::TIMEOUT;
+                    eml::hal::error.store(Error::TIMEOUT);
                 }
                 else {
-                    eml::hal::error = Error::READ;
+                    eml::hal::error.store(Error::READ);
                 }
 
                 return 0;
@@ -111,10 +111,10 @@ namespace eml::hal::peripherals::i2c {
             if(tmp_ < 0) {
 
                 if(tmp_ == PICO_ERROR_TIMEOUT) {
-                    eml::hal::error = Error::TIMEOUT;
+                    eml::hal::error.store(Error::TIMEOUT);
                 }
                 else {
-                    eml::hal::error = Error::WRITE;
+                    eml::hal::error.store(Error::WRITE);
                 }
 
                 tmp_ = 0;
@@ -142,14 +142,9 @@ namespace eml::hal::peripherals::i2c {
             return (m_frequency = i2c_set_baudrate(hal_to_rp2040_inst(m_instance), frequency));
         }
 
-        uint getFrequency() const override {
+        [[nodiscard]] uint getFrequency() const override {
 
             return m_frequency;
-        }
-
-        bool isInitialised() const override {
-
-            return m_inited;
         }
 
         std::size_t isReadable() override {
@@ -171,12 +166,10 @@ namespace eml::hal::peripherals::i2c {
         // ****************************************************************
         //                    Constructors and Destructor
         // ****************************************************************
-        explicit I2C(const I2CInstance instance) : InterfaceI2C(), m_inited{false} {
+        explicit I2C(const I2CInstance instance) : InterfaceI2C() {
 
             m_instance = instance;
         }
-
-        bool m_inited;
 
     private:
     };

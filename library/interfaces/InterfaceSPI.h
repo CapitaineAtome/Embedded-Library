@@ -21,7 +21,8 @@ namespace eml::hal::interfaces {
         // ****************************************************************
         //                    Constructors and Destructor
         // ****************************************************************
-/**
+
+        /**
          * The destructor must call @ref eml::hal::interfaces::InterfaceSPI::deinit() "deinit()" in the concrete class
          */
         ~InterfaceSPI() override = default;
@@ -54,7 +55,7 @@ namespace eml::hal::interfaces {
          * @param frequency
          * @return
          */
-        virtual bool init(const pin_t &sck_pin,
+        [[nodiscard]] virtual bool init(const pin_t &sck_pin,
                           const pin_t &mosi_pin,
                           const pin_t &miso_pin,
                           const uint frequency)=0;
@@ -69,7 +70,7 @@ namespace eml::hal::interfaces {
          *
          * @return
          */
-        virtual bool isInitialised() const =0;
+        [[nodiscard]] virtual bool isInitialised() const =0;
 
         /**
          *
@@ -77,28 +78,96 @@ namespace eml::hal::interfaces {
          */
         virtual void select(const uint pin) const =0;
 
+        /**
+         *
+         * @param pin
+         */
         virtual void deselect(const uint pin) const =0;
 
-        virtual bool setFormat(const uint data_bits,
+        [[nodiscard]] virtual bool setFormat(const uint data_bits,
                                const enum peripherals::spi::ClockPolarity clk_pol,
                                const enum peripherals::spi::ClockPhase clk_pha,
                                const BitOrder order)=0;
 
-        virtual bool setMode(const peripherals::Mode mode)=0;
+        /**
+         *
+         * @param mode
+         * @return
+         */
+        [[nodiscard]] virtual bool setMode(const peripherals::Mode mode)=0;
 
+        /**
+         *
+         * @return
+         */
         virtual peripherals::Mode getMode() const =0;
 
-        virtual bool isWritable() const=0;
-        virtual bool isReadable() const=0;
-        virtual bool isBusy() const=0;
+        /**
+         *
+         * @return
+         */
+        [[nodiscard]] virtual bool isWritable() const=0;
 
+        /**
+         *
+         * @return
+         */
+        [[nodiscard]] virtual bool isReadable() const=0;
+
+        /**
+         *
+         * @return
+         */
+        [[nodiscard]] virtual bool isBusy() const=0;
+
+        /**
+         *
+         * @param buffer
+         * @param len
+         * @return
+         */
         virtual int read(uint8_t * const buffer, const size_t len)=0;
+
+        /**
+         *
+         * @param buffer
+         * @param len
+         * @return
+         */
         virtual int read(uint16_t * const buffer, const size_t len)=0;
 
+        /**
+         *
+         * @param repeated_tx
+         * @param buffer
+         * @param len
+         * @return
+         */
         virtual int repeated_read(uint8_t repeated_tx, uint8_t * const buffer, const size_t len)=0;
+
+        /**
+         *
+         * @param repeated_tx
+         * @param buffer
+         * @param len
+         * @return
+         */
         virtual int repeated_read(uint16_t repeated_tx, uint16_t * const buffer, const size_t len)=0;
 
+        /**
+         *
+         * @param buffer
+         * @param len
+         * @return
+         */
         virtual int write(const uint8_t * const buffer, const size_t len)=0;
+
+        /**
+         *
+         * @param buffer
+         * @param len
+         * @return
+         */
         virtual int write(const uint16_t * const buffer, const size_t len)=0;
 
     protected:

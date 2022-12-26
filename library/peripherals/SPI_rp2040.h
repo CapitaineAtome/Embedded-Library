@@ -11,7 +11,7 @@
 
 static spi_inst *hal_to_rp2040_inst(eml::hal::peripherals::SPIInstance instance) {
 
-    return instance == eml::hal::peripherals::SPI_INSTANCE0 ? spi0 : spi1;
+    return instance == eml::hal::peripherals::SPIInstance::SPI_INSTANCE0 ? spi0 : spi1;
 }
 
 namespace eml::hal::peripherals::spi {
@@ -50,16 +50,16 @@ class SPI : public interfaces::InterfaceSPI {
         //                          Static Functions
         // ****************************************************************
 
-        static SPI &getInstance(const uint8_t instance) {
+        static SPI &getInstance(const SPIInstance instance) {
 
             switch(instance) {
                 default:
-                case SPI_INSTANCE0:
-                    static SPI s_spi_instance0{static_cast<const SPIInstance>(instance)};
+                case SPIInstance::SPI_INSTANCE0:
+                    static SPI s_spi_instance0{instance};
                     return s_spi_instance0;
 
-                case SPI_INSTANCE1:
-                    static SPI s_spi_instance1{static_cast<const SPIInstance>(instance)};
+                case SPIInstance::SPI_INSTANCE1:
+                    static SPI s_spi_instance1{instance};
                     return s_spi_instance1;
             }
         }

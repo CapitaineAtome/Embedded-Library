@@ -25,7 +25,7 @@ namespace eml::hal::interfaces {
          * Default constructor.
          */
         InterfaceDigitalGPIO() :
-                m_gpio_pin{0},
+                m_gpio_pin{},
                 m_gpio_dir{peripherals::gpio::Direction::OUT},
                 m_gpio_pull{peripherals::gpio::Pull::NONE},
                 m_gpio_func{peripherals::gpio::Function::NONE},
@@ -84,63 +84,17 @@ namespace eml::hal::interfaces {
         {}
 
         /**
-         * Instantiate a new GPIO pin by moving it from another one.
-         *
-         * @param other
-         */
-        InterfaceDigitalGPIO(InterfaceDigitalGPIO &&other) noexcept
-        {
-            if(this != &other) {
-
-                m_gpio_pin = other.m_gpio_pin;
-                m_gpio_dir = other.m_gpio_dir;
-                m_gpio_pull = other.m_gpio_pull;
-                m_gpio_func = other.m_gpio_func;
-                m_gpio_irq = other.m_gpio_irq;
-
-                // other.m_gpio_pin = 0;
-                // other.m_gpio_dir = ???;
-                // other.m_gpio_pull = Pull::NONE;
-                other.m_gpio_func = peripherals::gpio::Function::NONE;
-                // other.m_gpio_irq = IRQ::NONE;
-            }
-        }
-
-        /**
          * Destructor
          */
         ~InterfaceDigitalGPIO() override =default;
+
+        InterfaceDigitalGPIO(const InterfaceDigitalGPIO &)=delete;
 
         // ****************************************************************
         //                            Operators
         // ****************************************************************
 
-        /**
-         * Move assignment operator
-         *
-         * @param other
-         * @return
-         */
-        InterfaceDigitalGPIO &operator=(InterfaceDigitalGPIO &&other) noexcept {
-
-            if(this != &other) {
-
-                m_gpio_pin = other.m_gpio_pin;
-                m_gpio_dir = other.m_gpio_dir;
-                m_gpio_pull = other.m_gpio_pull;
-                m_gpio_func = other.m_gpio_func;
-                m_gpio_irq = other.m_gpio_irq;
-
-                // other.m_gpio_pin = 0;
-                // other.m_gpio_dir = ???;
-                // other.m_gpio_pull = Pull::NONE;
-                other.m_gpio_func = peripherals::gpio::Function::NONE;
-                // other.m_gpio_irq = IRQ::NONE;
-                // other.m_last_error = Error::None;
-            }
-
-            return *this;
-        }
+        InterfaceDigitalGPIO &operator=(const InterfaceDigitalGPIO &)=delete;
 
         /**
          *
@@ -177,7 +131,7 @@ namespace eml::hal::interfaces {
          *
          * @note This function is called in the implementation constructor.
          */
-        virtual void init()=0;
+        [[nodiscard]] virtual bool init()=0;
 
         /**
          * De initialise the GPIO instance.
@@ -191,14 +145,14 @@ namespace eml::hal::interfaces {
          *
          * @return whether this instance has been inited
          */
-        virtual bool inited() const=0;
+        [[nodiscard]] virtual bool inited() const=0;
 
         /**
          * Read into the GPIO.
          *
          * @return value read
          */
-        virtual uint8_t read()=0;
+        [[nodiscard]] virtual uint8_t read()=0;
 
         /**
          * Write into the GPIO.
@@ -224,7 +178,7 @@ namespace eml::hal::interfaces {
         /**
          *
          */
-        virtual pin_t getPin() const noexcept {
+        [[nodiscard]] virtual pin_t getPin() const noexcept {
 
             return m_gpio_pin;
         }
@@ -233,7 +187,7 @@ namespace eml::hal::interfaces {
          *
          * @param gpio_dir direction
          */
-        virtual bool setDirection(const enum peripherals::gpio::Direction gpio_dir)=0;
+        [[nodiscard]] virtual bool setDirection(const enum peripherals::gpio::Direction gpio_dir)=0;
 
         /**
          *
@@ -248,7 +202,7 @@ namespace eml::hal::interfaces {
          *
          * @param gpio_pull pulling mode
          */
-        virtual bool setPull(const enum peripherals::gpio::Pull gpio_pull)=0;
+        [[nodiscard]] virtual bool setPull(const enum peripherals::gpio::Pull gpio_pull)=0;
 
         /**
          *
@@ -263,7 +217,7 @@ namespace eml::hal::interfaces {
          *
          * @param gpio_func function of this gpio instance
          */
-        virtual bool setFunction(const enum peripherals::gpio::Function gpio_func)=0;
+        [[nodiscard]] virtual bool setFunction(const enum peripherals::gpio::Function gpio_func)=0;
 
         /**
          *
@@ -288,13 +242,25 @@ namespace eml::hal::interfaces {
         //     return m_gpio_irq;
         // }
 
+        // Reimplement this in the derived class if needed
+        friend void swap(InterfaceDigitalGPIO &first, InterfaceDigitalGPIO &second) {
+
+            using std::swap;
+
+            swap(first.m_gpio_pin, second.m_gpio_pin);
+            swap(first.m_gpio_dir, second.m_gpio_dir);
+            swap(first.m_gpio_pull, second.m_gpio_pull);
+            swap(first.m_gpio_func, second.m_gpio_func);
+            swap(first.m_gpio_irq, second.m_gpio_irq);
+        }
+
     protected:
 
         // ****************************************************************
         //                            Members
         // ****************************************************************
 
-        pin_t m_gpio_pin; ///< Hold the gpio pin
+        pin_t m_gpio_pin{}; ///< Hold the gpio pin
 
         enum peripherals::gpio::Direction m_gpio_dir; ///< Hold the gpio direction, (Input; Output)
         enum peripherals::gpio::Pull m_gpio_pull; ///< Hold the gpio pulling mode ( Up; Down; ... )

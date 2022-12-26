@@ -37,17 +37,50 @@ namespace eml::hal::interfaces {
         InterfacePWM &operator=(const InterfacePWM &)=delete;
         InterfacePWM &operator=(InterfacePWM &&)=delete;
 
-        virtual InterfacePWM &operator=(const uint)=0;
-        virtual InterfacePWM &operator++()=0;
-        virtual InterfacePWM &operator--()=0;
-        virtual InterfacePWM &operator+=(const uint)=0;
-        virtual InterfacePWM &operator-=(const uint)=0;
+        virtual InterfacePWM &operator=(const uint value) {
+
+            write(value);
+
+            return *this;
+        }
+
+        virtual InterfacePWM &operator++() {
+
+            write(read() + 1);
+
+            return *this;
+        }
+
+        virtual InterfacePWM &operator--() {
+
+            write(read() - 1);
+
+            return *this;
+        }
+
+        virtual InterfacePWM &operator+=(const uint value) {
+
+            write(read() + value);
+
+            return *this;
+        }
+
+        virtual InterfacePWM &operator-=(const uint value) {
+
+            write(read() - value);
+
+            return *this;
+        }
+
 
         // ****************************************************************
         //                             Functions
         // ****************************************************************
 
         virtual bool init(const uint32_t frequency, const uint8_t duty_cycle, bool start)=0;
+
+        virtual void enable()=0;
+        virtual void disable()=0;
 
         virtual void setFrequency(uint32_t frequency, bool start)=0;
         virtual uint32_t getFrequency() const {

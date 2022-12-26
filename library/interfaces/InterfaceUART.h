@@ -51,7 +51,7 @@ namespace eml::hal::interfaces {
           * @param baudrate value of the baud rate
           * @return whether an error occurred or not
           */
-        virtual bool init(const pin_t &rx_pin, const pin_t &tx_pin, uint baudrate)=0;
+         [[nodiscard]] virtual bool init(const pin_t &rx_pin, const pin_t &tx_pin, uint baudrate)=0;
 
         /**
          * Deinitialise an instance of the UART.
@@ -138,28 +138,28 @@ namespace eml::hal::interfaces {
          * Get the baud rate value
          * @return value of the baud rate
          */
-        virtual uint getBaudrate() const=0;
+        [[nodiscard]] virtual uint getBaudrate() const=0;
 
         /**
          * Determine if the UART has been initialised
          *
          * @return true if it has been reinitialised, false otherwise
          */
-        virtual bool isInitialised()const=0;
+        [[nodiscard]] virtual bool isInitialised()const=0;
 
         /**
          *  Determine how many data is waiting in the RX FIFO.
          *
          * @return 0 if nothing waiting otherwise number of bytes waiting
          */
-        virtual size_t isReadable()const=0;
+        [[nodiscard]] virtual size_t isReadable()const=0;
 
         /**
          * Determine how many space is available in the TX FIFO.
          *
          * @return 0 if no space available otherwise number of bytes that can be sent
          */
-        virtual size_t isWritable()const=0;
+        [[nodiscard]] virtual size_t isWritable()const=0;
 
         /**
          * Set UART data format.

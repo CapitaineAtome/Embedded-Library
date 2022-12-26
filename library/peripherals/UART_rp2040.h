@@ -13,7 +13,7 @@
 
 static uart_inst *hal_to_rp2040_inst(eml::hal::peripherals::UARTInstance instance) {
 
-    return instance == eml::hal::peripherals::UART_INSTANCE0 ? uart0 : uart1;
+    return instance == eml::hal::peripherals::UARTInstance::UART_INSTANCE0 ? uart0 : uart1;
 }
 
 namespace eml::hal::peripherals::uart {
@@ -45,16 +45,16 @@ namespace eml::hal::peripherals::uart {
         //                          Static Functions
         // ****************************************************************
 
-        static UART &getInstance(const uint8_t instance) {
+        static UART &getInstance(const UARTInstance instance) {
 
             switch(instance) {
                 default:
-                case UART_INSTANCE0:
-                    static UART s_uart_instance0{static_cast<const UARTInstance>(instance)};
+                case UARTInstance::UART_INSTANCE0:
+                    static UART s_uart_instance0{instance};
                     return s_uart_instance0;
 
-                case UART_INSTANCE1:
-                    static UART s_uart_instance1{static_cast<const UARTInstance>(instance)};
+                case UARTInstance::UART_INSTANCE1:
+                    static UART s_uart_instance1{instance};
                     return s_uart_instance1;
             }
         }
