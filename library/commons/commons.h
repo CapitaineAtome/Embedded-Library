@@ -20,7 +20,8 @@
 #include <cstdint>
 #include <cstddef>
 #include <cstring>
-#include <sys/types.h>
+
+#include <algorithm>
 
 #include "../traits/NonCopyable.h"
 #include "../traits/NonMovable.h"
@@ -67,7 +68,7 @@ namespace eml::hal {
             /**
              * Direction definition of a GPIO pin
              */
-            enum class Direction : uint8_t {
+            enum class [[nodiscard]] Direction : uint8_t {
 
                 IN,
                 OUT,
@@ -76,7 +77,7 @@ namespace eml::hal {
             /**
              * Pulling mode definition of a GPIO pin
              */
-            enum class Pull : uint8_t {
+            enum class [[nodiscard]] Pull : uint8_t {
 
                 NONE,
                 UP,
@@ -87,7 +88,7 @@ namespace eml::hal {
             /**
              * Function definition of a GPIO pin. What it is used for. NONE = DEFAULT
              */
-            enum class Function : uint8_t {
+            enum class [[nodiscard]] Function : uint8_t {
 
                 NONE,
                 GPIO,
@@ -101,7 +102,7 @@ namespace eml::hal {
             /**
              * Interrupt level definition of a GPIO pin
              */
-            enum class IRQ : uint8_t {
+            enum class [[nodiscard]] IRQ : uint8_t {
 
                 NONE,
                 LEVEL_LOW,
@@ -110,7 +111,8 @@ namespace eml::hal {
                 EDGE_RISE,
             };
 
-            enum class SlewRate : uint8_t {
+            enum class [[nodiscard]] SlewRate : uint8_t {
+
                 SLOW,
                 FAST,
             };
@@ -119,7 +121,8 @@ namespace eml::hal {
 
         namespace uart {
 
-            enum class Parity : uint8_t {
+            enum class [[nodiscard]] Parity : uint8_t {
+
                 PARITY_NONE,
                 PARITY_EVEN,
                 PARITY_ODD,
@@ -128,33 +131,34 @@ namespace eml::hal {
 
         namespace spi {
 
-            enum class ClockPhase : uint8_t {
+            enum class [[nodiscard]] ClockPhase : uint8_t {
 
                 CLOCK_PHASE0,
                 CLOCK_PHASE1,
             };
 
-            enum class ClockPolarity : uint8_t {
+            enum class [[nodiscard]] ClockPolarity : uint8_t {
 
                 CLOCK_POLARITY0,
                 CLOCK_POLARITY1,
             };
         }
 
-        enum class Mode : uint8_t {
+        enum class [[nodiscard]] Mode : uint8_t {
+
             MODE_SLAVE,
             MODE_MASTER,
         };
 
     } // namespace peripherals
 
-    enum class BitOrder : uint8_t {
+    enum class [[nodiscard]] BitOrder : uint8_t {
 
         ORDER_LITTLE_ENDIAN,
         ORDER_BIG_ENDIAN,
     };
 
-    enum class Error {
+    enum class [[nodiscard]] Error : uint8_t {
 
         NONE,
         ERROR,
@@ -172,6 +176,7 @@ namespace eml::hal {
     //                         Global Variables
     // ****************************************************************
 
+    // NOTE: Think about getting rid of this
     std::atomic<Error> error;
 
     // ****************************************************************
@@ -215,7 +220,7 @@ namespace eml {
      */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
-    inline void set_bit(T1 &bit_set, const T2 pos) {
+    constexpr void set_bit(T1 &bit_set, const T2 pos) {
 
         bit_set |= 1U << pos;
     }
@@ -238,7 +243,7 @@ namespace eml {
      */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
-    inline void clear_bit(T1 &bit_set, const T2 pos) {
+    constexpr void clear_bit(T1 &bit_set, const T2 pos) {
 
         bit_set &= ~(1U << pos);
     }
@@ -263,7 +268,7 @@ namespace eml {
      */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
-    inline void toggle_bit(T1 &bit_set, const T2 pos) {
+    constexpr void toggle_bit(T1 &bit_set, const T2 pos) {
 
         bit_set ^= 1U << pos;
     }
@@ -288,7 +293,7 @@ namespace eml {
      */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
-    inline bool check_bit(const T1 &bit_set, const T2 pos) {
+    constexpr bool check_bit(const T1 &bit_set, const T2 pos) {
 
         return (bit_set >> pos) & 1U;
     }
@@ -314,7 +319,7 @@ namespace eml {
      */
     template<typename T1, typename T2, typename T3>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2> and concepts::is_bitwiseable<T3>
-    inline void set_bits_pos(T1 &bit_set, const T2 pos, const T3 bit_mask) {
+    constexpr void set_bits_pos(T1 &bit_set, const T2 pos, const T3 bit_mask) {
 
         bit_set = (bit_set & (~(bit_mask << pos))) | (bit_mask<<pos);
     }
@@ -337,7 +342,7 @@ namespace eml {
      */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
-    inline void set_bits(T1 &bit_set, const T2 bit_mask) {
+    constexpr void set_bits(T1 &bit_set, const T2 bit_mask) {
 
         bit_set = (bit_set & (~bit_mask)) | (bit_mask);
     }
@@ -360,7 +365,7 @@ namespace eml {
      */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
-    inline void clear_bits(T1 &bit_set, const T2 bit_mask) {
+    constexpr void clear_bits(T1 &bit_set, const T2 bit_mask) {
 
         bit_set &= ~bit_mask;
     }
@@ -383,7 +388,7 @@ namespace eml {
      */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
-    inline void toggle_bits(T1 &bit_set, const T2 bit_mask) {
+    constexpr void toggle_bits(T1 &bit_set, const T2 bit_mask) {
 
         bit_set ^= bit_mask;
     }
@@ -399,7 +404,7 @@ namespace eml {
      */
     template<typename T1, typename T2>
     requires concepts::is_bitwiseable<T1> and concepts::is_bitwiseable<T2>
-    inline bool check_bits(const T1 &bit_set, const T2 bit_mask) {
+    constexpr bool check_bits(const T1 &bit_set, const T2 bit_mask) {
 
         return (bit_set & bit_mask) == bit_mask;
     }
@@ -429,41 +434,42 @@ namespace eml {
         return length;
     }
 
-    /**
-     * Compares and returns the minimum value given in parameters.
-     *
-     * @note Return type depend on rule of T1 and T2 cast rule. double > float > long int > int
-     *
-     * @tparam T1 type of first parameter that has to be totally ordered
-     * @tparam T2 type of second parameter that has to be totally ordered
-     * @param a element to compare
-     * @param b element to compare
-     * @return minimum value between the first and second parameters
-     */
-    template<typename T1, typename T2>
-    requires std::totally_ordered<T1> and std::totally_ordered<T2>
-    auto min(T1 a, T2 b) {
+    // /**
+    //  * Compares and returns the minimum value given in parameters.
+    //  *
+    //  * @note Return type depend on rule of T1 and T2 cast rule. double > float > long int > int
+    //  *
+    //  * @tparam T1 type of first parameter that has to be totally ordered
+    //  * @tparam T2 type of second parameter that has to be totally ordered
+    //  * @param a element to compare
+    //  * @param b element to compare
+    //  * @return minimum value between the first and second parameters
+    //  */
+    // template<typename T1, typename T2>
+    // requires std::totally_ordered<T1> and std::totally_ordered<T2>
+    // constexpr auto min(T1 a, T2 b) {
 
-        return (a < b ? a : b);
-    }
+    //     return (a < b ? a : b);
+    // }
 
-    /**
-     * Compares and returns the maximum value given in parameters.
-     *
-     * @note Return type depend on rule of T1 and T2 cast rule. double > float > long int > int
-     *
-     * @tparam T1 type of first parameters that has to be totally ordered
-     * @tparam T2 type of second parameters that has to be totally ordered
-     * @param a element to compare
-     * @param b element to compare
-     * @return maximum value between the first and second parameters
-     */
-    template<typename T1, typename T2>
-    requires std::equality_comparable<T1> and std::equality_comparable<T2>
-    auto max(T1 a, T2 b) {
+    // /**
+    //  * Compares and returns the maximum value given in parameters.
+    //  *
+    //  * @note Return type depend on rule of T1 and T2 cast rule. double > float > long int > int
+    //  *
+    //  * @tparam T1 type of first parameters that has to be totally ordered
+    //  * @tparam T2 type of second parameters that has to be totally ordered
+    //  * @param a element to compare
+    //  * @param b element to compare
+    //  * @return maximum value between the first and second parameters
+    //  */
+    // template<typename T1, typename T2>
+    // requires std::totally_ordered<T1> and std::totally_ordered<T2>
+    // constexpr auto max(T1 a, T2 b) {
 
-        return (a > b ? a : b);
-    }
+    //     return (a > b ? a : b);
+    // }
+
 } // namespace eml
 
 #endif //EMBEDDED_LIBRARY_COMMONS_H

@@ -17,7 +17,7 @@ namespace eml::hal {
         /**
          * Number of instance for the UART peripheral on a RP2040.
          */
-        enum UARTInstance : uint8_t {
+         enum class [[nodiscard]] UARTInstance : uint8_t {
 
             UART_INSTANCE0,
             UART_INSTANCE1
@@ -26,7 +26,7 @@ namespace eml::hal {
         /**
          * Number of instance for the SPI peripheral on a RP2040.
          */
-        enum SPIInstance : uint8_t {
+        enum class [[nodiscard]] SPIInstance : uint8_t {
 
             SPI_INSTANCE0,
             SPI_INSTANCE1
@@ -35,7 +35,7 @@ namespace eml::hal {
         /**
          * Number of instance for the I2C peripheral on a RP2040.
          */
-        enum I2CInstance : uint8_t {
+        enum class [[nodiscard]] I2CInstance : uint8_t {
 
             I2C_INSTANCE0,
             I2C_INSTANCE1
@@ -46,53 +46,53 @@ namespace eml::hal {
     /**
      * Enumerate all the pin number available on a RP2040.
      */
-    enum PIN : uint {
+    enum class [[nodiscard]] PIN : uint {
 
-        GPIO0 = 0,
-        GPIO1 = 1,
-        GPIO2 = 2,
-        GPIO3 = 3,
-        GPIO4 = 4,
-        GPIO5 = 5,
-        GPIO6 = 6,
-        GPIO7 = 7,
-        GPIO8 = 8,
-        GPIO9 = 9,
+        PIN0 = 0,
+        PIN1 = 1,
+        PIN2 = 2,
+        PIN3 = 3,
+        PIN4 = 4,
+        PIN5 = 5,
+        PIN6 = 6,
+        PIN7 = 7,
+        PIN8 = 8,
+        PIN9 = 9,
 
-        GPIO10 = 10,
-        GPIO11 = 11,
-        GPIO12 = 12,
-        GPIO13 = 13,
-        GPIO14 = 14,
-        GPIO15 = 15,
-        GPIO16 = 16,
-        GPIO17 = 17,
-        GPIO18 = 18,
-        GPIO19 = 19,
+        PIN10 = 10,
+        PIN11 = 11,
+        PIN12 = 12,
+        PIN13 = 13,
+        PIN14 = 14,
+        PIN15 = 15,
+        PIN16 = 16,
+        PIN17 = 17,
+        PIN18 = 18,
+        PIN19 = 19,
 
-        GPIO20 = 20,
-        GPIO21 = 21,
-        GPIO22 = 22,
-        GPIO23 = 23,
-        GPIO24 = 24,
-        GPIO25 = 25,
-        GPIO26 = 26,
-        GPIO27 = 27,
-        GPIO28 = 28,
-        GPIO29 = 29,
+        PIN20 = 20,
+        PIN21 = 21,
+        PIN22 = 22,
+        PIN23 = 23,
+        PIN24 = 24,
+        PIN25 = 25,
+        PIN26 = 26,
+        PIN27 = 27,
+        PIN28 = 28,
+        PIN29 = 29,
 
-        NUMBER_GPIO_PIN,
+        NUMBER_OF_PINS,
     };
 
     /**
      * Structure that define how a pin is represented.
      * On the RP2040, only the pin number is needed.
      *
-     * @note the value shouldn't be superior than 29. This is the pin highest number on a RP2040.
+     * @note the value shouldn't be superior than @ref hal::PIN::NUMBER_GPIO_PIN . This is the pin highest number on a RP2040.
      */
-    typedef struct {
+    typedef struct [[nodiscard]]  {
 
-        ///< The pin number
+        ///< The pin
         uint pin;
 
     } pin_t;
@@ -104,11 +104,9 @@ namespace eml::hal {
      * @param pin pin number
      * @return a pin_t structure to be used
      */
-    pin_t pin(const uint pin) {
+    constexpr pin_t pin(const PIN pin) {
 
-        pin_t pin_{.pin = pin};
-
-        return pin_;
+        return {.pin = static_cast<uint>(pin)};
     }
 
     void sleep_micros(uint64_t us) {
