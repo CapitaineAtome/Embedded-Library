@@ -5,10 +5,7 @@
 #ifndef EMBEDDEDLIBRARY_VECTOR_H
 #define EMBEDDEDLIBRARY_VECTOR_H
 
-#include "../library/traits/NonCopyable.h"
 #include "../commons/commons.h"
-
-#include <cstddef>
 
 #ifdef EML_THREAD_SUPPORTED
 #include <shared_mutex>
@@ -17,8 +14,8 @@
 
 namespace eml::etl {
 
-    template<typename T, const size_t L>
-    class Vector : public traits::NonCopyable<Vector<T, L>> {
+    template<typename T, const std::size_t L>
+    class Vector {
     public:
 
         Vector() : m_vector{} {};
@@ -37,6 +34,8 @@ namespace eml::etl {
 
             swap(*this, other);
         }
+
+        ~Vector()=default;
 
         /**
          * Provide a default copy assignment operator.
@@ -67,7 +66,7 @@ namespace eml::etl {
          * @param index index of the element to reach
          * @return element
          */
-        [[nodiscard]] T &operator[](const size_t index) {
+        [[nodiscard]] T &operator[](const std::size_t index) {
 
             return at(index);
         }
@@ -77,7 +76,7 @@ namespace eml::etl {
          * @param index index of the element to reach
          * @return element
          */
-        [[nodiscard]] T &at(const size_t index) {
+        [[nodiscard]] T &at(const std::size_t index) {
 
 #ifdef EML_THREAD_SUPPORTED
             std::unique_lock lock_writing_{m_lock};
@@ -173,7 +172,7 @@ namespace eml::etl {
          *
          * @return current vector length
          */
-        size_t length() const noexcept {
+        std::size_t length() const noexcept {
 
             return m_current_length;
         }
@@ -183,7 +182,7 @@ namespace eml::etl {
          *
          * @return maximum vector length
          */
-        size_t max_length() const noexcept {
+        std::size_t max_length() const noexcept {
 
             return L;
         }
@@ -200,7 +199,7 @@ namespace eml::etl {
         std::shared_mutex m_lock;
 #endif
         T m_vector[L]; ///< The vector
-        size_t m_current_length{}; ///< Current length of the vector. This value can change when pushing and popping.
+        std::size_t m_current_length{}; ///< Current length of the vector. This value can change when pushing and popping.
 
     private:
     };

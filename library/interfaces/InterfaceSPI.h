@@ -126,7 +126,7 @@ namespace eml::hal::interfaces {
          * @param len
          * @return
          */
-        virtual int read(uint8_t * const buffer, const size_t len)=0;
+        virtual int read(uint8_t * const buffer, const std::size_t len)=0;
 
         /**
          *
@@ -134,16 +134,7 @@ namespace eml::hal::interfaces {
          * @param len
          * @return
          */
-        virtual int read(uint16_t * const buffer, const size_t len)=0;
-
-        /**
-         *
-         * @param repeated_tx
-         * @param buffer
-         * @param len
-         * @return
-         */
-        virtual int repeated_read(uint8_t repeated_tx, uint8_t * const buffer, const size_t len)=0;
+        virtual int read(uint16_t * const buffer, const std::size_t len)=0;
 
         /**
          *
@@ -152,7 +143,16 @@ namespace eml::hal::interfaces {
          * @param len
          * @return
          */
-        virtual int repeated_read(uint16_t repeated_tx, uint16_t * const buffer, const size_t len)=0;
+        virtual int repeated_read(uint8_t repeated_tx, uint8_t * const buffer, const std::size_t len)=0;
+
+        /**
+         *
+         * @param repeated_tx
+         * @param buffer
+         * @param len
+         * @return
+         */
+        virtual int repeated_read(uint16_t repeated_tx, uint16_t * const buffer, const std::size_t len)=0;
 
         /**
          *
@@ -160,7 +160,7 @@ namespace eml::hal::interfaces {
          * @param len
          * @return
          */
-        virtual int write(const uint8_t * const buffer, const size_t len)=0;
+        virtual int write(const uint8_t * const buffer, const std::size_t len)=0;
 
         /**
          *
@@ -168,7 +168,7 @@ namespace eml::hal::interfaces {
          * @param len
          * @return
          */
-        virtual int write(const uint16_t * const buffer, const size_t len)=0;
+        virtual int write(const uint16_t * const buffer, const std::size_t len)=0;
 
     protected:
         // ****************************************************************

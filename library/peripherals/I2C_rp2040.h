@@ -85,7 +85,7 @@ namespace eml::hal::peripherals::i2c {
             return false;
         }
 
-        std::size_t read(const uint8_t addr, uint8_t *buffer, const size_t length, const bool nostop) override {
+        std::size_t read(const uint8_t addr, uint8_t *buffer, const std::size_t length, const bool nostop) override {
 
             auto tmp_ = i2c_read_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
 
@@ -101,10 +101,10 @@ namespace eml::hal::peripherals::i2c {
                 return 0;
             }
 
-            return static_cast<size_t>(tmp_);
+            return static_cast<std::size_t>(tmp_);
         }
 
-        std::size_t write(const uint8_t addr, const uint8_t * const buffer, const size_t length, const bool nostop) override {
+        std::size_t write(const uint8_t addr, const uint8_t * const buffer, const std::size_t length, const bool nostop) override {
 
             auto tmp_ = i2c_write_blocking(hal_to_rp2040_inst(m_instance), addr, buffer, length, nostop);
 
@@ -120,7 +120,7 @@ namespace eml::hal::peripherals::i2c {
                 tmp_ = 0;
             }
 
-            return static_cast<size_t>(tmp_);
+            return static_cast<std::size_t>(tmp_);
         }
 
         bool setPins(const pin_t &sda_pin, const pin_t &scl_pin) override {

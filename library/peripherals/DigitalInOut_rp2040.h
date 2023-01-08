@@ -104,6 +104,7 @@ namespace eml::hal::peripherals::gpio {
         bool setFunction(const enum Function gpio_func) override {
             gpio_function func_;
 
+            // change: create a constant lookup table and use it instead of switch
             switch(gpio_func) {
                 case Function::NONE:
                     func_ = GPIO_FUNC_NULL;
@@ -130,7 +131,6 @@ namespace eml::hal::peripherals::gpio {
                 default:
                     eml::hal::error.store(Error::NOTAVAILABLEONPLATFORM);
                     return true;
-                    break;
             }
 
             gpio_set_function(m_gpio_pin.pin, func_);

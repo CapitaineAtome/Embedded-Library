@@ -7,10 +7,6 @@
 
 #include "../commons/commons.h"
 
-#include <cstdint>
-#include <cstddef>
-#include <cstring>
-
 namespace eml::etl {
 
     /**
@@ -57,7 +53,7 @@ namespace eml::etl {
          * @param buffer contains value to pack
          * @return instance of this class
          */
-        template<const size_t sz>
+        template<const std::size_t sz>
         TypeSerializer &operator<<(uint8_t (&buffer)[sz]) {
             pack(buffer, sz);
             return *this;
@@ -71,7 +67,7 @@ namespace eml::etl {
          * @param buffer contains value to unpack
          * @return instance of this class
          */
-        template<const size_t sz>
+        template<const std::size_t sz>
         TypeSerializer &operator>>(uint8_t (&buffer)[sz]) {
             unpack(buffer, sz);
             return *this;
@@ -238,7 +234,7 @@ namespace eml::etl {
          * @param sz sizeof of the value
          * @return size of the unpacked value
          */
-        std::size_t unpack(uint8_t * const buffer, const size_t sz) const {
+        std::size_t unpack(uint8_t * const buffer, const std::size_t sz) const {
 
             memset(buffer, 0, sz);
             memcpy(buffer, &m_value, std::min(sizeof(m_value), sz));
@@ -289,7 +285,7 @@ namespace eml::etl {
     private:
 
     public:
-        static constexpr size_t buffer_size{sizeof(type_serializer_value)};
+        static constexpr std::size_t buffer_size{sizeof(type_serializer_value)};
 
     };
 

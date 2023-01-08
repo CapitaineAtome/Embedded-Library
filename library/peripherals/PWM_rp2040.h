@@ -9,7 +9,7 @@
 #include <hardware/regs/clocks.h>
 #include "hardware/pwm.h"
 
-#include "commons/commons.h"
+#include "../commons/commons.h"
 
 static uint duty_cycle_to_pulse_width(const uint duty_cycle, const uint frequency) {
 
@@ -32,6 +32,7 @@ namespace eml::hal::peripherals::pwm {
         // ****************************************************************
         //                            Operators
         // ****************************************************************
+
         PWM &operator=(const PWM &)=delete;
         PWM &operator=(PWM &&)=delete;
 
@@ -213,7 +214,7 @@ namespace eml::hal::peripherals::pwm {
         }
 
     protected:
-        explicit PWM(const pin_t &pwm_pin) : InterfacePWM() {}
+        explicit PWM(const pin_t &pwm_pin) : InterfacePWM() {m_pwm_pin = pwm_pin;}
 
         pwm_config m_config{};
 

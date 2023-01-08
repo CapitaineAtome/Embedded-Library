@@ -16,9 +16,8 @@
 #define EMBEDDED_LIBRARY_COMMONS_H
 
 #include <atomic>
-
 #include <cstdint>
-#include <cstddef>
+
 #include <cstring>
 
 #include <algorithm>
@@ -428,8 +427,8 @@ namespace eml {
      * @tparam length length of the array
      * @return length of the given array
      */
-    template<typename T, size_t length>
-    constexpr size_t sizeof_array(const T (&)[length]) {
+    template<typename T, std::size_t length>
+    constexpr std::size_t sizeof_array(const T (&)[length]) {
 
         return length;
     }

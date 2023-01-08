@@ -84,9 +84,9 @@ namespace eml::hal::peripherals::uart {
             return uart_getc(hal_to_rp2040_inst(m_instance));
         }
 
-        void read(uint8_t * const buffer, const size_t length) override {
+        void read(uint8_t * const buffer, const std::size_t length) override {
 
-            for(size_t i{0}; i < length; i++) {
+            for(std::size_t i{0}; i < length; i++) {
 
                 uart_read_blocking(hal_to_rp2040_inst(m_instance), buffer, length);
             }
@@ -97,9 +97,9 @@ namespace eml::hal::peripherals::uart {
             uart_putc(hal_to_rp2040_inst(m_instance), buffer);
         }
 
-        void write(const uint8_t * const buffer, const size_t length) override {
+        void write(const uint8_t * const buffer, const std::size_t length) override {
 
-            for(size_t i{0}; i < length; i++) {
+            for(std::size_t i{0}; i < length; i++) {
 
                 uart_putc(hal_to_rp2040_inst(m_instance), buffer[i]);
             }
@@ -143,7 +143,7 @@ namespace eml::hal::peripherals::uart {
          *
          * @return 0 if nothing waiting otherwise number of bytes waiting
          */
-        size_t isReadable() const override {
+        std::size_t isReadable() const override {
 
             return uart_is_readable(hal_to_rp2040_inst(m_instance));
         }
@@ -155,7 +155,7 @@ namespace eml::hal::peripherals::uart {
          *
          * @return 0 if no space available otherwise number of bytes that can be sent
          */
-        size_t isWritable() const override {
+        std::size_t isWritable() const override {
 
             return uart_is_writable(hal_to_rp2040_inst(m_instance));
         }

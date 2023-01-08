@@ -94,7 +94,7 @@ namespace eml::hal::interfaces {
          * @param nostop whether to hold the bus line
          * @return number of bytes read
          */
-        virtual std::size_t read(const uint8_t addr, uint8_t *buffer, const size_t length, const bool nostop)=0;
+        virtual std::size_t read(const uint8_t addr, uint8_t *buffer, const std::size_t length, const bool nostop)=0;
 
         /**
          * Write a buffer to a device.
@@ -105,7 +105,7 @@ namespace eml::hal::interfaces {
          * @param nostop whether to hold the bus line
          * @return number of bytes written
          */
-        virtual std::size_t write(const uint8_t addr, const uint8_t * const buffer, const size_t length, const bool nostop)=0;
+        virtual std::size_t write(const uint8_t addr, const uint8_t * const buffer, const std::size_t length, const bool nostop)=0;
 
         /**
          * Read from a register from a device and store the data into a buffer.
@@ -117,7 +117,7 @@ namespace eml::hal::interfaces {
          * @param nostop whether to hold the bus line
          * @return number of bytes read
          */
-        virtual std::size_t readfrom(const uint8_t addr, const uint8_t reg, uint8_t *buffer, const size_t length, bool nostop) {
+        virtual std::size_t readfrom(const uint8_t addr, const uint8_t reg, uint8_t *buffer, const std::size_t length, bool nostop) {
 
             selectRegister(addr, reg);
             return read(addr, buffer, length, nostop);
@@ -133,7 +133,7 @@ namespace eml::hal::interfaces {
          * @param nostop whether to hold the bus line
          * @return number of bytes written
          */
-        virtual std::size_t writeto(const uint8_t addr, const uint8_t reg, const uint8_t * const buffer, const size_t length, bool nostop) {
+        virtual std::size_t writeto(const uint8_t addr, const uint8_t reg, const uint8_t * const buffer, const std::size_t length, bool nostop) {
 
             selectRegister(addr, reg);
             return write(addr, buffer, length, nostop);

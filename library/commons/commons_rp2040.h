@@ -82,6 +82,45 @@ namespace eml::hal {
         PIN29 = 29,
 
         NUMBER_OF_PINS,
+
+        // Default peripherals
+
+#ifdef PICO_DEFAULT_UART_RX_PIN
+        PIN_UART_RX = PICO_DEFAULT_UART_RX_PIN,
+#endif // PICO_DEFAULT_UART_RX_PIN
+
+#ifdef PICO_DEFAULT_UART_TX_PIN
+        PIN_UART_TX = PICO_DEFAULT_UART_TX_PIN,
+#endif // PICO_DEFAULT_UART_TX_PIN
+
+#ifdef PICO_DEFAULT_I2C_SDA_PIN
+        PIN_I2C_SDA = PICO_DEFAULT_I2C_SDA_PIN,
+#endif // PICO_DEFAULT_I2C_SDA_PIN
+
+#ifdef PICO_DEFAULT_I2C_SCL_PIN
+        PIN_I2C_SCL = PICO_DEFAULT_I2C_SCL_PIN,
+#endif // PICO_DEFAULT_I2C_SCL_PIN
+
+#ifdef PICO_DEFAULT_SPI_RX_PIN
+        PIN_SPI_MISO = PICO_DEFAULT_SPI_RX_PIN,
+#endif // PICO_DEFAULT_SPI_RX_PIN
+
+#ifdef PICO_DEFAULT_SPI_TX_PIN
+        PIN_SPI_MOSI = PICO_DEFAULT_SPI_TX_PIN,
+#endif // PICO_DEFAULT_SPI_TX_PIN
+
+#ifdef PICO_DEFAULT_SPI_SCK_PIN
+        PIN_SPI_SCK = PICO_DEFAULT_SPI_SCK_PIN,
+#endif // PICO_DEFAULT_SPI_SCK_PIN
+
+#ifdef PICO_DEFAULT_SPI_CSN_PIN
+        PIN_SPI_CS = PICO_DEFAULT_SPI_CSN_PIN,
+#endif // PICO_DEFAULT_SPI_CSN_PIN
+
+#ifdef PICO_DEFAULT_LED_PIN
+        PIN_LED = PICO_DEFAULT_LED_PIN,
+#endif // PICO_DEFAULT_LED_PIN
+
     };
 
     /**
@@ -92,8 +131,7 @@ namespace eml::hal {
      */
     typedef struct [[nodiscard]]  {
 
-        ///< The pin
-        uint pin;
+        uint pin; ///< The pin
 
     } pin_t;
 

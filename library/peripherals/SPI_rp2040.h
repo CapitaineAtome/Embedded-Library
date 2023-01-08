@@ -152,32 +152,32 @@ class SPI : public interfaces::InterfaceSPI {
             return spi_is_busy(hal_to_rp2040_inst(m_instance));
         }
 
-        int read(uint8_t * const buffer, const size_t len) override {
+        int read(uint8_t * const buffer, const std::size_t len) override {
 
             return spi_read_blocking(hal_to_rp2040_inst(m_instance), 0, buffer, len);
         }
 
-        int read(uint16_t * const buffer, const size_t len) override {
+        int read(uint16_t * const buffer, const std::size_t len) override {
 
             return spi_read16_blocking(hal_to_rp2040_inst(m_instance), 0, buffer, len);
         }
 
-        int repeated_read(uint8_t repeated_tx, uint8_t * const buffer, const size_t len) override {
+        int repeated_read(uint8_t repeated_tx, uint8_t * const buffer, const std::size_t len) override {
 
             return spi_read_blocking(hal_to_rp2040_inst(m_instance), repeated_tx, buffer, len);
         }
 
-        int repeated_read(uint16_t repeated_tx, uint16_t * const buffer, const size_t len) override {
+        int repeated_read(uint16_t repeated_tx, uint16_t * const buffer, const std::size_t len) override {
 
             return spi_read16_blocking(hal_to_rp2040_inst(m_instance), repeated_tx, buffer, len);
         }
 
-        int write(const uint8_t * const buffer, const size_t len) override {
+        int write(const uint8_t * const buffer, const std::size_t len) override {
 
             return spi_write_blocking(hal_to_rp2040_inst(m_instance), buffer, len);
         }
 
-        int write(const uint16_t * const buffer, const size_t len) override {
+        int write(const uint16_t * const buffer, const std::size_t len) override {
 
             return spi_write16_blocking(hal_to_rp2040_inst(m_instance), buffer, len);
         }

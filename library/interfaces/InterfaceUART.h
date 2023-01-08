@@ -5,8 +5,6 @@
 #ifndef EMBEDDEDLIBRARY_INTERFACEUART_H
 #define EMBEDDEDLIBRARY_INTERFACEUART_H
 
-#include <cstdlib>
-
 #include "../traits/Singleton.h"
 #include "InterfaceDigitalGPIO.h"
 
@@ -73,7 +71,7 @@ namespace eml::hal::interfaces {
          * @param buffer array of data to read
          * @param length length of the array
          */
-        virtual void read(uint8_t * const buffer, const size_t length)=0;
+        virtual void read(uint8_t * const buffer, const std::size_t length)=0;
 
         /**
          * Send a byte through the UART
@@ -88,7 +86,7 @@ namespace eml::hal::interfaces {
          * @param buffer array of data do send
          * @param length length of the array
          */
-        virtual void write(const uint8_t * const buffer, const size_t length)=0;
+        virtual void write(const uint8_t * const buffer, const std::size_t length)=0;
 
         /**
          * Set the RX et TX pin of the UART
@@ -152,14 +150,14 @@ namespace eml::hal::interfaces {
          *
          * @return 0 if nothing waiting otherwise number of bytes waiting
          */
-        [[nodiscard]] virtual size_t isReadable()const=0;
+        [[nodiscard]] virtual std::size_t isReadable()const=0;
 
         /**
          * Determine how many space is available in the TX FIFO.
          *
          * @return 0 if no space available otherwise number of bytes that can be sent
          */
-        [[nodiscard]] virtual size_t isWritable()const=0;
+        [[nodiscard]] virtual std::size_t isWritable()const=0;
 
         /**
          * Set UART data format.

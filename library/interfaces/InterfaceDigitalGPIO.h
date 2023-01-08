@@ -5,13 +5,13 @@
 #ifndef EMBEDDEDLIBRARY_INTERFACEDIGITALGPIO_H
 #define EMBEDDEDLIBRARY_INTERFACEDIGITALGPIO_H
 
-#include <cstdint>
 #include <sys/types.h>
 #include <utility>
 
 #include "../commons/commons.h"
 #include "../traits/NonCopyable.h"
 
+// TODO: A documenter
 namespace eml::hal::interfaces {
 
     class InterfaceDigitalGPIO : traits::NonCopyable<InterfaceDigitalGPIO> {

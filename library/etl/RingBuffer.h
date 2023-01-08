@@ -5,11 +5,7 @@
 #ifndef EMBEDDEDLIBRARY_RINGBUFFER_H
 #define EMBEDDEDLIBRARY_RINGBUFFER_H
 
-#include <cstdlib>
-#include <cstddef>
-
 #include "../commons/commons.h"
-#include "../library/traits/NonCopyable.h"
 
 #ifdef EML_THREAD_SUPPORTED
 #include <shared_mutex>
@@ -18,8 +14,8 @@
 
 namespace eml::etl {
 
-    template<typename T, const size_t L>
-    class RingBuffer : traits::NonCopyable<RingBuffer<T, L>> {
+    template<typename T, const std::size_t L>
+    class RingBuffer {
     public:
 
         explicit RingBuffer() : m_ring{} {};
@@ -42,6 +38,8 @@ namespace eml::etl {
 
             swap(*this, other);
         }
+
+        ~RingBuffer()=default;
 
         /**
          * Provide a default move assignment operator.
@@ -158,17 +156,17 @@ namespace eml::etl {
             return length() == 0;
         }
 
-        size_t length() const noexcept {
+        std::size_t length() const noexcept {
 
             return std::max(m_read_pos, m_write_pos) - std::min(m_read_pos, m_write_pos);
         }
 
-        size_t max_length() const noexcept {
+        std::size_t max_length() const noexcept {
 
             return L;
         }
 
-        size_t size() const noexcept {
+        std::size_t size() const noexcept {
 
             return sizeof(T) * L;
         }
@@ -187,8 +185,8 @@ namespace eml::etl {
         std::shared_mutex m_lock;
 #endif
         T m_ring[L]; ///< The ring
-        size_t m_read_pos{}; ///< Position on the read sequence
-        size_t m_write_pos{}; ///< Position on the write sequence
+        std::size_t m_read_pos{}; ///< Position on the read sequence
+        std::size_t m_write_pos{}; ///< Position on the write sequence
 
     private:
     };
