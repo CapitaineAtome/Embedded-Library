@@ -14,7 +14,7 @@ static spi_inst *hal_to_rp2040_inst(eml::hal::peripherals::SPIInstance instance)
     return instance == eml::hal::peripherals::SPIInstance::SPI_INSTANCE0 ? spi0 : spi1;
 }
 
-namespace eml::hal::peripherals::spi {
+namespace eml::hal::peripherals {
 
 class SPI : public interfaces::InterfaceSPI {
     public:
@@ -113,8 +113,8 @@ class SPI : public interfaces::InterfaceSPI {
         }
 
         bool setFormat(const uint data_bits,
-                       const enum peripherals::spi::ClockPolarity clk_pol,
-                       const enum peripherals::spi::ClockPhase clk_pha,
+                       const enum spi::ClockPolarity clk_pol,
+                       const enum spi::ClockPhase clk_pha,
                        const BitOrder order) override {
 
             spi_set_format(hal_to_rp2040_inst(m_instance),
@@ -196,6 +196,6 @@ class SPI : public interfaces::InterfaceSPI {
 
     private:
     };
-} // namespace eml::hal::peripherals::spi
+} // namespace eml::hal::peripherals
 
 #endif //EMBEDDEDLIBRARY_SPI_RP2040_H

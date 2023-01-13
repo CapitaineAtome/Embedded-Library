@@ -10,7 +10,7 @@
 
 #include <hardware/gpio.h>
 
-namespace eml::hal::peripherals::gpio {
+namespace eml::hal::peripherals {
 
     class DigitalInOut : public eml::hal::interfaces::InterfaceDigitalGPIO {
     public:
@@ -19,7 +19,7 @@ namespace eml::hal::peripherals::gpio {
         //                   Constructors and Destructor
         //****************************************************************
 
-        DigitalInOut(pin_t gpio_pin, const Direction direction) : eml::hal::interfaces::InterfaceDigitalGPIO(gpio_pin, direction) {
+        DigitalInOut(pin_t gpio_pin, const gpio::Direction direction) : eml::hal::interfaces::InterfaceDigitalGPIO(gpio_pin, direction) {
 
             // Do not call a virtual member function in constructor or destructor unless it is implemented in the class
 
@@ -61,7 +61,7 @@ namespace eml::hal::peripherals::gpio {
             m_gpio_func = gpio::Function::GPIO;
 
             gpio_init(m_gpio_pin.pin);
-            gpio_set_dir(m_gpio_pin.pin, m_gpio_dir == Direction::OUT);
+            gpio_set_dir(m_gpio_pin.pin, m_gpio_dir == gpio::Direction::OUT);
 
             return false;
         }
@@ -69,7 +69,7 @@ namespace eml::hal::peripherals::gpio {
         void deinit() override {
 
             gpio_deinit(m_gpio_pin.pin);
-            m_gpio_func = Function::NONE;
+            m_gpio_func = gpio::Function::NONE;
         }
 
         [[nodiscard]] bool inited() const override {
@@ -86,45 +86,45 @@ namespace eml::hal::peripherals::gpio {
             return gpio_put(m_gpio_pin.pin, value);
         }
 
-        bool setDirection(const enum Direction gpio_dir) override {
-            gpio_set_dir(m_gpio_pin.pin, gpio_dir == Direction::OUT);
+        bool setDirection(const enum gpio::Direction gpio_dir) override {
+            gpio_set_dir(m_gpio_pin.pin, gpio_dir == gpio::Direction::OUT);
 
             return false;
         }
 
-        bool setPull(const enum Pull gpio_pull) override {
+        bool setPull(const enum gpio::Pull gpio_pull) override {
 
             gpio_set_pulls(m_gpio_pin.pin,
-                           gpio_pull == Pull::UP,
-                           gpio_pull == Pull::DOWN);
+                           gpio_pull == gpio::Pull::UP,
+                           gpio_pull == gpio::Pull::DOWN);
 
             return false;
         }
 
-        bool setFunction(const enum Function gpio_func) override {
+        bool setFunction(const enum gpio::Function gpio_func) override {
             gpio_function func_;
 
             // change: create a constant lookup table and use it instead of switch
             switch(gpio_func) {
-                case Function::NONE:
+                case gpio::Function::NONE:
                     func_ = GPIO_FUNC_NULL;
                     break;
-                case Function::GPIO:
+                case gpio::Function::GPIO:
                     func_ = GPIO_FUNC_SIO;
                     break;
-                case Function::UART:
+                case gpio::Function::UART:
                     func_ = GPIO_FUNC_UART;
                     break;
-                case Function::SPI:
+                case gpio::Function::SPI:
                     func_ = GPIO_FUNC_SPI;
                     break;
-                case Function::I2C:
+                case gpio::Function::I2C:
                     func_ = GPIO_FUNC_I2C;
                     break;
-                case Function::PWM:
+                case gpio::Function::PWM:
                     func_ = GPIO_FUNC_PWM;
                     break;
-                case Function::USB:
+                case gpio::Function::USB:
                     func_ = GPIO_FUNC_USB;
                     break;
 

@@ -16,7 +16,7 @@ static uart_inst *hal_to_rp2040_inst(eml::hal::peripherals::UARTInstance instanc
     return instance == eml::hal::peripherals::UARTInstance::UART_INSTANCE0 ? uart0 : uart1;
 }
 
-namespace eml::hal::peripherals::uart {
+namespace eml::hal::peripherals {
 
     class UART : public interfaces::InterfaceUART, public traits::NonMovable<UART>{
     public:
@@ -67,7 +67,7 @@ namespace eml::hal::peripherals::uart {
 
             m_baudrate = uart_init(hal_to_rp2040_inst(m_instance), baudrate);
             setPins(rx_pin, tx_pin);
-            setFormat(8, 1, Parity::PARITY_NONE);
+            setFormat(8, 1, uart::Parity::PARITY_NONE);
 
             return false;
         }
@@ -160,7 +160,7 @@ namespace eml::hal::peripherals::uart {
             return uart_is_writable(hal_to_rp2040_inst(m_instance));
         }
 
-        void setFormat(uint data_bits, uint stop_bits, peripherals::uart::Parity parity)  const override {
+        void setFormat(uint data_bits, uint stop_bits, uart::Parity parity)  const override {
 
             uart_set_format(hal_to_rp2040_inst(m_instance), data_bits, stop_bits, static_cast<uart_parity_t>(parity));
         }
@@ -175,7 +175,7 @@ namespace eml::hal::peripherals::uart {
         //                   Constructors and Destructor
         //****************************************************************
 
-        explicit UART(const peripherals::UARTInstance instance)
+        explicit UART(const UARTInstance instance)
         : InterfaceUART() {
 
             m_instance = instance;
@@ -183,6 +183,6 @@ namespace eml::hal::peripherals::uart {
 
     };
 
-} // namespace eml::hal::peripherals::uart
+} // namespace eml::hal::peripherals
 
 #endif //EMBEDDEDLIBRARY_UART_RP2040_H

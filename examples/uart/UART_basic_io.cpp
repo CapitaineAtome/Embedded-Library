@@ -8,12 +8,12 @@
 
 using namespace eml;
 
-int main() {
+[[noreturn]] int main() {
 
     const char *message{"Hello, World!"};
     uint8_t msg[32]{};
 
-    auto &uart{hal::peripherals::uart::UART::getInstance(hal::peripherals::UARTInstance::UART_INSTANCE0)};
+    auto &uart{hal::peripherals::UART::getInstance(hal::peripherals::UARTInstance::UART_INSTANCE0)};
 
     uart.init(hal::pin(hal::PIN::PIN1),
               hal::pin(hal::PIN::PIN0),

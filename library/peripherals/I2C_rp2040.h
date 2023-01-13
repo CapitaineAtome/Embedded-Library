@@ -14,7 +14,7 @@ static i2c_inst *hal_to_rp2040_inst(eml::hal::peripherals::I2CInstance instance)
     return instance == eml::hal::peripherals::I2CInstance::I2C_INSTANCE0 ? i2c0 : i2c1;
 }
 
-namespace eml::hal::peripherals::i2c {
+namespace eml::hal::peripherals {
 
     class I2C : public interfaces::InterfaceI2C {
     public:
@@ -174,6 +174,6 @@ namespace eml::hal::peripherals::i2c {
     private:
     };
 
-} // eml::hal::peripherals::i2c
+} // eml::hal::peripherals
 
 #endif //EMBEDDEDLIBRARY_I2C_RP2040_H

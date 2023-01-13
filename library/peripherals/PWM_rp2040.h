@@ -16,7 +16,7 @@ static uint duty_cycle_to_pulse_width(const uint duty_cycle, const uint frequenc
     return duty_cycle * (1/frequency) / 100;
 }
 
-namespace eml::hal::peripherals::pwm {
+namespace eml::hal::peripherals {
 
     class PWM : public interfaces::InterfacePWM {
     public:
@@ -220,6 +220,6 @@ namespace eml::hal::peripherals::pwm {
 
     private:
     };
-} // namespace eml::hal::peripherals::pwm
+} // namespace eml::hal::peripherals
 
 #endif //EMBEDDEDLIBRARY_PWM_RP2040_H

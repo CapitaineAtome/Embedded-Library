@@ -14,7 +14,7 @@
 int main() {
 
     // Instantiate the LED at the pin LED_PIN as an output.
-    auto led{eml::hal::peripherals::gpio::DigitalInOut(eml::hal::pin(eml::hal::PIN{LED_PIN}),
+    auto led{eml::hal::peripherals::DigitalInOut(eml::hal::pin(eml::hal::PIN{LED_PIN}),
                                                   eml::hal::peripherals::gpio::Direction::OUT)};
 
     while(true) {
